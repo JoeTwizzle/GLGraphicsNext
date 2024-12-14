@@ -1,5 +1,14 @@
-# GL Graphics Next
-A modern stateless OpenGL library using OpenTK 5
+# GL Graphics NEXT
+![](https://github.com/JoeTwizzle/GLGraphicsNext/blob/main/Logo.png)
+
+A modern lightweight object oriented wrapper around the OpenGL API using OpenTK
+
+# Nuget
+GL Graphics NEXT is available as a nuget package 
+
+|  Name  | Release |
+|:---|----------------:|
+|**GL Graphics NEXT**| [![NuGet](https://img.shields.io/nuget/v/GLGraphicsNext)](https://www.nuget.org/packages/GLGraphicsNext) |
 
 # Features
 * ### Lightweight struct based abstraction over almost all modern OpenGL primitives.
