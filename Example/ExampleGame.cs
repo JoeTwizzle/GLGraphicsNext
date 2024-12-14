@@ -1,14 +1,7 @@
 ﻿using GLGraphicsNext;
-using OpenTK.Core.Utility;
-using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Example;
 
@@ -55,7 +48,7 @@ internal sealed class ExampleGame : BasePal2Window
             -0.5f,  0.5f, 0.0f
     };
 
-    readonly uint[] indices = { 0, 1, 3, 1, 2, 3 }; //Indices for our Square
+    readonly uint[] indices = [0, 1, 3, 1, 2, 3]; //Indices for our Square
     protected override void InitRenderer()
     {
         //The OpenGL vertex input location 0 consists of 3 float values. 
