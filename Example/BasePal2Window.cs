@@ -1,10 +1,11 @@
-﻿using OpenTK.Core.Utility;
+using OpenTK.Core.Utility;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,11 +14,12 @@ namespace Example;
 internal abstract class BasePal2Window
 {
     protected WindowHandle window;
-    protected OpenGLContextHandle glContext;
+    protected OpenGLContextHandle contextHandle;
     public Vector2i FramebufferSize { get; private set; }
 
     public BasePal2Window()
     {
+        GraphicsApi graphicsApi = GraphicsApi.OpenGL;
         ToolkitOptions options = new()
         {
             // ApplicationName is the name of the application
@@ -28,24 +30,37 @@ internal abstract class BasePal2Window
         };
 
         Toolkit.Init(options);
-
-
-        OpenGLGraphicsApiHints contextSettings = new()
+        GraphicsApiHints contextSettings = graphicsApi switch
         {
-            // Here different options of the opengl context can be set.
-            Version = new Version(4, 6),
-            Profile = OpenGLProfile.Core,
-            DebugFlag = true,
-            DepthBits = ContextDepthBits.Depth24,
-            StencilBits = ContextStencilBits.Stencil8,
+            GraphicsApi.Vulkan => new VulkanGraphicsApiHints(),
+            GraphicsApi.OpenGL => new OpenGLGraphicsApiHints()
+            {
+                // Here different options of the opengl context can be set.
+                Version = new Version(4, 6),
+                Profile = OpenGLProfile.Core,
+                DebugFlag = true,
+                DepthBits = ContextDepthBits.Depth24,
+                StencilBits = ContextStencilBits.Stencil8,
+            },
+            _ => throw new NotImplementedException(),
         };
-
         window = Toolkit.Window.Create(contextSettings);
 
-        glContext = Toolkit.OpenGL.CreateFromWindow(window);
-        // The the current opengl context and load the bindings.
-        Toolkit.OpenGL.SetCurrentContext(glContext);
-        GLLoader.LoadBindings(Toolkit.OpenGL.GetBindingsContext(glContext));
+        switch (graphicsApi)
+        {
+            case GraphicsApi.OpenGL:
+                {
+                    var handle = Toolkit.OpenGL.CreateFromWindow(window);
+                    contextHandle = handle;
+                    // Set the current opengl context and load the bindings.
+                    Toolkit.OpenGL.SetCurrentContext(handle);
+                    GLLoader.LoadBindings(Toolkit.OpenGL.GetBindingsContext(handle));
+                }
+                break;
+            default:
+                throw new NotImplementedException();
+        }
+
         //Register event handlers
         EventQueue.EventRaised += EventRaised;
         // Set the title of the window

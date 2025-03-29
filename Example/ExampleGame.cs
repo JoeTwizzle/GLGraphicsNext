@@ -110,6 +110,6 @@ internal sealed class ExampleGame : BasePal2Window
         //Render our Square
         GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
 
-        Toolkit.OpenGL.SwapBuffers(glContext);
+        Toolkit.OpenGL.SwapBuffers(contextHandle);
     }
 }
