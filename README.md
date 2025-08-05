@@ -17,7 +17,7 @@ GL Graphics NEXT is available as a nuget package
 * ### No clunky old "bind" style OpenGL APIs are used.
 
 # Remarks
-This library requires support for OpenGL 4.5+.
+This library requires support for OpenGL 4.5+, or the Direct State Access extension. Any GPU built in the last 10+ years should be supported.
 
 This should include all dedicated GPUs and most integrated GPUs, with the notable exception of MacOS, as there OpenGL is considered 'deprecated' in favour of Metal.
 
