@@ -21,7 +21,7 @@ This library requires support for OpenGL 4.5+, or the Direct State Access extens
 
 This should include all dedicated GPUs and most integrated GPUs, with the notable exception of MacOS, as there OpenGL is considered 'deprecated' in favour of Metal.
 
-It may still be possible to use this library and other modern OpenGL libraries on MacOS, by using the [Zink](https://docs.mesa3d.org/drivers/zink.html) implenmentation of OpenGL through [MoltenVK](https://github.com/KhronosGroup/MoltenVK) on MacOS.
+It may still be possible to use this library and other modern OpenGL libraries on MacOS, by using the [Zink](https://docs.mesa3d.org/drivers/zink.html) implementation of OpenGL through [MoltenVK](https://github.com/KhronosGroup/MoltenVK) on MacOS.
 
 # Implemented Features
 * [x] FrameBuffers
