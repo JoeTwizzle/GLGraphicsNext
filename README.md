@@ -1,5 +1,5 @@
 # GL Graphics NEXT
-![](https://github.com/JoeTwizzle/GLGraphicsNext/blob/main/Logo.png)
+![](https://raw.githubusercontent.com/JoeTwizzle/GLGraphicsNext/refs/heads/main/Logo.png)
 
 A modern lightweight object oriented wrapper around the OpenGL API using OpenTK
 
