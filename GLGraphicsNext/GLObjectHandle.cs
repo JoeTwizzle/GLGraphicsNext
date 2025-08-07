@@ -20,6 +20,10 @@ public readonly struct GLObjectHandle : IDisposable, IEquatable<GLObjectHandle>
         Value = value;
         ObjectType = objectType;
     }
+    public static GLObjectHandle Create(int value, GLObjectType objectType)
+    {
+        return new GLObjectHandle(value, objectType);
+    }
 
     public void Dispose()
     {
