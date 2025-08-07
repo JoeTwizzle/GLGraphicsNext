@@ -19,9 +19,6 @@ public readonly struct GLQueryBase : IDisposable, IEquatable<GLQueryBase>
         Handle = new(GL.CreateQuery(queryTarget), GLObjectType.Query);
     }
 
-
-
-
     public void Dispose()
     {
         Handle.Dispose();

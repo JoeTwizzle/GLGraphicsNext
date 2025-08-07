@@ -84,8 +84,8 @@ public readonly unsafe struct GLSampler : IDisposable, IEquatable<GLSampler>
     /// </summary>
     /// <param name="value">A value >= 1.0f describing the 'maximum degree of anisotropy' used when sampling</param>
     /// <remarks>
-    /// <see href="https://registry.khronos.org/OpenGL/extensions/EXT/EXT_texture_filter_anisotropic.txt"/>
-    /// <see href="https://www.khronos.org/opengl/wiki/sampler_Object#Anisotropic_filtering"/>
+    /// <para><see href="https://registry.khronos.org/OpenGL/extensions/EXT/EXT_texture_filter_anisotropic.txt"/> </para>
+    /// <para><see href="https://www.khronos.org/opengl/wiki/sampler_Object#Anisotropic_filtering"/>              </para>
     /// </remarks>
     public void SetAnisotropicFilter(float value)
     {
@@ -199,8 +199,8 @@ public readonly unsafe struct GLSampler : IDisposable, IEquatable<GLSampler>
     /// </summary>
     /// <param name="enabled"></param>
     /// <remarks>
-    /// <see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glSamplerParameter.xhtml"/>
-    /// <see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexImage2D.xhtml"/>
+    /// <para><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glSamplerParameter.xhtml"/></para>
+    /// <para><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexImage2D.xhtml"/></para>
     /// </remarks>
     public void SetCompareFunction(DepthFunction compareFunction)
     {

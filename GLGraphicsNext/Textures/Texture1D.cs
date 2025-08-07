@@ -68,10 +68,41 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
         return RawTexture.GetSizedInternalFormat();
     }
 
+
+    /// <summary>
+    /// Uploads compressed image data into a region of this texture
+    /// </summary>
+    /// <param name="data">Source data being uploaded</param>
+    /// <param name="xOffset">X offset into the destination texture</param>
+    /// <param name="regionWidth">Width of the region to write to</param>
+    /// <param name="internalFormat">Internal format of the source data (must be compressed)</param>
+    /// <param name="compressedDataSize">Size in bytes of the souce data to copy</param>
+    /// <param name="mipLevel">Which mip level to write to</param>
+    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glCompressedTexSubImage1D.xhtml"/></remarks>
+    public void UploadCompressedImageData(void* data, uint xOffset, uint regionWidth, InternalFormat internalFormat, int compressedDataSize, uint mipLevel = 0)
+    {
+        GL.CompressedTextureSubImage1D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)regionWidth, internalFormat, compressedDataSize, data);
+    }
+
+    /// <summary>
+    /// Uploads compressed image data into a region of this texture
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="data">Source data being uploaded</param>
+    /// <param name="xOffset">X offset into the destination texture</param>
+    /// <param name="regionWidth">Width of the region to write to</param>
+    /// <param name="internalFormat">Internal format of the source data (must be compressed)</param>
+    /// <param name="compressedDataSize">Size in bytes of the souce data to copy</param>
+    /// <param name="mipLevel">Which mip level to write to</param>
+    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glCompressedTexSubImage1D.xhtml"/></remarks>
+    public void UploadCompressedImageData<T>(ReadOnlySpan<T> data, uint xOffset, uint regionWidth, InternalFormat internalFormat, int compressedDataSize, uint mipLevel = 0) where T : unmanaged
+    {
+        GL.CompressedTextureSubImage1D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)regionWidth, internalFormat, compressedDataSize, data);
+    }
+
     /// <summary>
     /// Uploads image data into a region of this texture
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     /// <param name="data">Source data being uploaded</param>
     /// <param name="range">Region of texture to write to</param>
     /// <param name="pixelFormat">PixelFormat of the source data</param>
@@ -84,18 +115,26 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
         UploadImageData(data, (uint)offset, (uint)length, pixelFormat, pixelType, (uint)mipLevel);
     }
 
-    /// <inheritdoc cref="UploadImageData{T}(ReadOnlySpan{T}, uint, uint, uint, uint, PixelFormat, PixelType, uint)"/>
+    /// <inheritdoc cref="UploadImageData(void*, uint, uint, PixelFormat, PixelType, uint)"/>
     public void UploadImageData(void* data, int xOffset, int regionWidth, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0)
     {
         UploadImageData(data, (uint)xOffset, (uint)regionWidth, pixelFormat, pixelType, (uint)mipLevel);
     }
 
-    /// <inheritdoc cref="UploadImageData{T}(ReadOnlySpan{T}, uint, uint, uint, uint, PixelFormat, PixelType, uint)"/>
+    /// <summary>
+    /// Uploads image data into a region of this texture
+    /// </summary>
+    /// <param name="data">Source data being uploaded</param>
+    /// <param name="xOffset">X offset into the destination texture</param>
+    /// <param name="regionWidth">Width of the region to write to</param>
+    /// <param name="pixelFormat">PixelFormat of the source data</param>
+    /// <param name="pixelType">PixelType of the souce data</param>
+    /// <param name="mipLevel">Which mip level to write to</param>
+    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage2D.xhtml"/></remarks>
     public void UploadImageData(void* data, uint xOffset, uint regionWidth, PixelFormat pixelFormat, PixelType pixelType, uint mipLevel = 0)
     {
         GL.TextureSubImage1D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)regionWidth, pixelFormat, pixelType, data);
     }
-
 
     /// <summary>
     /// Uploads image data into a region of this texture
