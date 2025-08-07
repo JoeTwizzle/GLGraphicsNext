@@ -35,9 +35,11 @@ public readonly unsafe struct Texture3D : IDisposable, IEquatable<Texture3D>
         MipLevels = mipLevels;
     }
 
-    [Obsolete($"The paramaterless constructor creates an invalid {nameof(Texture3D)}")]
+    [Obsolete($"The paramaterless constructor or default({nameof(Texture3D)}) creates an invalid {nameof(Texture3D)}")]
     public Texture3D()
-    { }
+    {
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(Texture3D)}");
+    }
 
     public Texture3D(TextureBase rawTexture)
     {

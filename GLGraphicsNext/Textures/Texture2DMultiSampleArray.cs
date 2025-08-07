@@ -33,9 +33,11 @@ public readonly unsafe struct Texture2DMultiSampleArray : IDisposable, IEquatabl
         Layers = layerCount;
     }
 
-    [Obsolete($"The paramaterless constructor creates an invalid {nameof(Texture2DMultiSampleArray)}")]
+    [Obsolete($"The paramaterless constructor or default({nameof(Texture2DMultiSampleArray)}) creates an invalid {nameof(Texture2DMultiSampleArray)}", true)]
     public Texture2DMultiSampleArray()
-    { }
+    {
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(Texture2DMultiSampleArray)}");
+    }
 
     public Texture2DMultiSampleArray(TextureBase rawTexture)
     {

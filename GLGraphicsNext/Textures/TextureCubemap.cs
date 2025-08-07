@@ -51,9 +51,11 @@ public readonly unsafe struct TextureCubemap : IDisposable, IEquatable<TextureCu
         MipLevels = mipLevels;
     }
 
-    [Obsolete($"The paramaterless constructor creates an invalid {nameof(TextureCubemap)}")]
+    [Obsolete($"The paramaterless constructor or default({nameof(TextureCubemap)}) creates an invalid {nameof(TextureCubemap)}", true)]
     public TextureCubemap()
-    { }
+    { 
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(TextureCubemap)}");
+    }
 
     public TextureCubemap(TextureBase rawTexture)
     {

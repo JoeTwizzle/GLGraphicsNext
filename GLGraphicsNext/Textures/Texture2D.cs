@@ -87,9 +87,11 @@ public readonly unsafe struct Texture2D : IDisposable, IEquatable<Texture2D>
         MipLevels = mipLevels;
     }
 
-    [Obsolete($"The paramaterless constructor creates an invalid {nameof(Texture2D)}")]
+    [Obsolete($"The paramaterless constructor or default({nameof(Texture2D)}) creates an invalid {nameof(Texture2D)}", true)]
     public Texture2D()
-    { }
+    {
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(Texture2D)}");
+    }
 
     public Texture2D(TextureBase rawTexture)
     {

@@ -9,9 +9,11 @@ public readonly struct GLQueryBase : IDisposable, IEquatable<GLQueryBase>
 {
     public readonly GLObjectHandle Handle;
 
-    [Obsolete($"The paramaterless constructor creates an invalid {nameof(GLQueryBase)}")]
+    [Obsolete($"The paramaterless constructor or default({nameof(GLQueryBase)}) creates an invalid {nameof(GLQueryBase)}", true)]
     public GLQueryBase()
-    { }
+    {
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(GLQueryBase)}");
+    }
 
     public GLQueryBase(GLObjectHandle handle)
     {

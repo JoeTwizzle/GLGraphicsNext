@@ -30,9 +30,11 @@ public readonly unsafe struct Texture2DMultiSample : IDisposable, IEquatable<Tex
         Height = srcTexture.Height;
     }
 
-    [Obsolete($"The paramaterless constructor creates an invalid {nameof(Texture2DMultiSample)}")]
+    [Obsolete($"The paramaterless constructor or default({nameof(Texture2DMultiSample)}) creates an invalid {nameof(Texture2DMultiSample)}", true)]
     public Texture2DMultiSample()
-    { }
+    {
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(Texture2DMultiSample)}");
+    }
 
     public Texture2DMultiSample(TextureBase rawTexture)
     {

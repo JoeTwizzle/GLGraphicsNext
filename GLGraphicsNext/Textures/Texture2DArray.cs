@@ -92,9 +92,11 @@ public readonly unsafe struct Texture2DArray : IDisposable, IEquatable<Texture2D
         MipLevels = mipLevels;
     }
 
-    [Obsolete($"The paramaterless constructor creates an invalid {nameof(Texture2DArray)}")]
+    [Obsolete($"The paramaterless constructor or default({nameof(Texture2DArray)}) creates an invalid {nameof(Texture2DArray)}", true)]
     public Texture2DArray()
-    { }
+    {
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(Texture2DArray)}");
+    }
 
     public Texture2DArray(TextureBase rawTexture)
     {
