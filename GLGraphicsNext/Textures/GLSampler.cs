@@ -1,9 +1,4 @@
-﻿using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OpenTK.Mathematics;
 
 namespace GLGraphicsNext;
 
@@ -88,8 +83,10 @@ public readonly unsafe struct GLSampler : IDisposable, IEquatable<GLSampler>
     /// Sets the 'maximum degree of anisotropy' used for sampling
     /// </summary>
     /// <param name="value">A value >= 1.0f describing the 'maximum degree of anisotropy' used when sampling</param>
-    /// <remarks><see href="https://registry.khronos.org/OpenGL/extensions/EXT/EXT_texture_filter_anisotropic.txt"/></remarks>
-    /// <remarks><see href="https://www.khronos.org/opengl/wiki/sampler_Object#Anisotropic_filtering"/></remarks>
+    /// <remarks>
+    /// <see href="https://registry.khronos.org/OpenGL/extensions/EXT/EXT_texture_filter_anisotropic.txt"/>
+    /// <see href="https://www.khronos.org/opengl/wiki/sampler_Object#Anisotropic_filtering"/>
+    /// </remarks>
     public void SetAnisotropicFilter(float value)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(value, 1f);
@@ -147,7 +144,7 @@ public readonly unsafe struct GLSampler : IDisposable, IEquatable<GLSampler>
     /// <summary>
     /// Sets the sampling behaviour for texture coordinates outside of the 0.0 .. 1.0 range to <c>TextureWrapMode.ClampToBorder</c> 
     /// </summary>
-    /// <param name="texcoord"></param>
+    /// <param name="texcoord">Selects which texture coordinate 'uvw' to modify (valid range 0 .. 2)</param>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     public void SetEdgeSamplingModeBorderClamp(int texcoord)
     {
@@ -184,6 +181,31 @@ public readonly unsafe struct GLSampler : IDisposable, IEquatable<GLSampler>
     public void SetBorderColor(Vec4 color)
     {
         GL.SamplerParameterfv(Handle.Value, SamplerParameterF.TextureBorderColor, &color.X);
+    }
+
+    /// <summary>
+    /// Enables the texture comparison mode for currently bound depth textures.
+    /// </summary>
+    /// <param name="enabled"></param>
+    /// <remarks><see cref="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glSamplerParameter.xhtml"/></remarks>
+    public void SetCompareMode(bool enabled)
+    {
+        int state = enabled ? 1 : 0;
+        GL.SamplerParameteriv(Handle.Value, SamplerParameterI.TextureCompareMode, &state);
+    }
+
+    /// <summary>
+    /// Specifies the texture comparison mode for currently bound depth textures, the compare mode must be enabled for this setting to show an effect.
+    /// </summary>
+    /// <param name="enabled"></param>
+    /// <remarks>
+    /// <see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glSamplerParameter.xhtml"/>
+    /// <see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexImage2D.xhtml"/>
+    /// </remarks>
+    public void SetCompareFunction(DepthFunction compareFunction)
+    {
+        int func = (int)compareFunction;
+        GL.SamplerParameteriv(Handle.Value, SamplerParameterI.TextureCompareFunc, &func);
     }
 
     public void Dispose()
