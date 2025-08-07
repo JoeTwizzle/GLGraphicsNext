@@ -108,7 +108,7 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
     /// <param name="pixelFormat">PixelFormat of the source data</param>
     /// <param name="pixelType">PixelType of the souce data</param>
     /// <param name="mipLevel">Which mip level to write to</param>
-    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage2D.xhtml"/></remarks>
+    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage1D.xhtml"/></remarks>
     public void UploadImageData(void* data, Range range, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0)
     {
         var (offset, length) = range.GetOffsetAndLength((int)Width);
@@ -130,7 +130,7 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
     /// <param name="pixelFormat">PixelFormat of the source data</param>
     /// <param name="pixelType">PixelType of the souce data</param>
     /// <param name="mipLevel">Which mip level to write to</param>
-    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage2D.xhtml"/></remarks>
+    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage1D.xhtml"/></remarks>
     public void UploadImageData(void* data, uint xOffset, uint regionWidth, PixelFormat pixelFormat, PixelType pixelType, uint mipLevel = 0)
     {
         GL.TextureSubImage1D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)regionWidth, pixelFormat, pixelType, data);
@@ -145,7 +145,7 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
     /// <param name="pixelFormat">PixelFormat of the source data</param>
     /// <param name="pixelType">PixelType of the souce data</param>
     /// <param name="mipLevel">Which mip level to write to</param>
-    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage2D.xhtml"/></remarks>
+    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage1D.xhtml"/></remarks>
     public void UploadImageData<T>(ReadOnlySpan<T> data, Range range, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0) where T : unmanaged
     {
         var (offset, length) = range.GetOffsetAndLength((int)Width);
@@ -168,7 +168,7 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
     /// <param name="pixelFormat">PixelFormat of the source data</param>
     /// <param name="pixelType">PixelType of the souce data</param>
     /// <param name="mipLevel">Which mip level to write to</param>
-    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage2D.xhtml"/></remarks>
+    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage1D.xhtml"/></remarks>
     public void UploadImageData<T>(ReadOnlySpan<T> data, uint xOffset, uint regionWidth, PixelFormat pixelFormat, PixelType pixelType, uint mipLevel = 0) where T : unmanaged
     {
         ArgumentOutOfRangeException.ThrowIfLessThan((uint)data.Length, regionWidth);
