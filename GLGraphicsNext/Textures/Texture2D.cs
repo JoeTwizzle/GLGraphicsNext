@@ -110,6 +110,40 @@ public readonly unsafe struct Texture2D : IDisposable, IEquatable<Texture2D>
     }
 
     /// <summary>
+    /// Uploads compressed image data into a region of this texture
+    /// </summary>
+    /// <param name="data">Source data being uploaded</param>
+    /// <param name="xOffset">X offset into the destination texture</param>
+    /// <param name="yOffset">Y offset into the destination texture</param>
+    /// <param name="regionWidth">Width of the region to write to</param>
+    /// <param name="regionHeight">Height of the region to write to</param>
+    /// <param name="internalFormat">Internal format of the source data (must be compressed)</param>
+    /// <param name="compressedDataSize">Size in bytes of the souce data to copy</param>
+    /// <param name="mipLevel">Which mip level to write to</param>
+    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glCompressedTexSubImage2D.xhtml"/></remarks>
+    public void UploadCompressedImageData(void* data, uint xOffset, uint yOffset, uint regionWidth, uint regionHeight, InternalFormat internalFormat, uint compressedDataSize, uint mipLevel = 0)
+    {
+        GL.CompressedTextureSubImage2D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)yOffset, (int)regionWidth, (int)regionHeight, internalFormat, (int)compressedDataSize, data);
+    }
+
+    /// <summary>
+    /// Uploads compressed image data into a region of this texture
+    /// </summary>
+    /// <param name="data">Source data being uploaded</param>
+    /// <param name="xOffset">X offset into the destination texture</param>
+    /// <param name="yOffset">Y offset into the destination texture</param>
+    /// <param name="regionWidth">Width of the region to write to</param>
+    /// <param name="regionHeight">Height of the region to write to</param>
+    /// <param name="internalFormat">Internal format of the source data (must be compressed)</param>
+    /// <param name="compressedDataSize">Size in bytes of the souce data to copy</param>
+    /// <param name="mipLevel">Which mip level to write to</param>
+    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glCompressedTexSubImage2D.xhtml"/></remarks>
+    public void UploadCompressedImageData<T>(ReadOnlySpan<T> data, uint xOffset, uint yOffset, uint regionWidth, uint regionHeight, InternalFormat internalFormat, uint compressedDataSize, uint mipLevel = 0) where T : unmanaged
+    {
+        GL.CompressedTextureSubImage2D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)yOffset, (int)regionWidth, (int)regionHeight, internalFormat, (int)compressedDataSize, data);
+    }
+
+    /// <summary>
     /// Uploads image data into a region of this texture
     /// </summary>
     /// <typeparam name="T"></typeparam>

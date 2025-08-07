@@ -79,9 +79,9 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
     /// <param name="compressedDataSize">Size in bytes of the souce data to copy</param>
     /// <param name="mipLevel">Which mip level to write to</param>
     /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glCompressedTexSubImage1D.xhtml"/></remarks>
-    public void UploadCompressedImageData(void* data, uint xOffset, uint regionWidth, InternalFormat internalFormat, int compressedDataSize, uint mipLevel = 0)
+    public void UploadCompressedImageData(void* data, uint xOffset, uint regionWidth, InternalFormat internalFormat, uint compressedDataSize, uint mipLevel = 0)
     {
-        GL.CompressedTextureSubImage1D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)regionWidth, internalFormat, compressedDataSize, data);
+        GL.CompressedTextureSubImage1D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)regionWidth, internalFormat, (int)compressedDataSize, data);
     }
 
     /// <summary>
@@ -95,9 +95,9 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
     /// <param name="compressedDataSize">Size in bytes of the souce data to copy</param>
     /// <param name="mipLevel">Which mip level to write to</param>
     /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glCompressedTexSubImage1D.xhtml"/></remarks>
-    public void UploadCompressedImageData<T>(ReadOnlySpan<T> data, uint xOffset, uint regionWidth, InternalFormat internalFormat, int compressedDataSize, uint mipLevel = 0) where T : unmanaged
+    public void UploadCompressedImageData<T>(ReadOnlySpan<T> data, uint xOffset, uint regionWidth, InternalFormat internalFormat, uint compressedDataSize, uint mipLevel = 0) where T : unmanaged
     {
-        GL.CompressedTextureSubImage1D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)regionWidth, internalFormat, compressedDataSize, data);
+        GL.CompressedTextureSubImage1D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)regionWidth, internalFormat, (int)compressedDataSize, data);
     }
 
     /// <summary>

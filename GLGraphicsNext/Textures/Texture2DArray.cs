@@ -117,6 +117,43 @@ public readonly unsafe struct Texture2DArray : IDisposable, IEquatable<Texture2D
     }
 
     /// <summary>
+    /// Uploads compressed image data into a region of this texture
+    /// </summary>
+    /// <param name="data">Source data being uploaded</param>
+    /// <param name="xOffset">X offset into the destination texture</param>
+    /// <param name="yOffset">Y offset into the destination texture</param>
+    /// <param name="index">Index in the texture array to write to</param>
+    /// <param name="regionWidth">Width of the region to write to</param>
+    /// <param name="regionHeight">Height of the region to write to</param>
+    /// <param name="internalFormat">Internal format of the source data (must be compressed)</param>
+    /// <param name="compressedDataSize">Size in bytes of the souce data to copy</param>
+    /// <param name="mipLevel">Which mip level to write to</param>
+    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glCompressedTexSubImage3D.xhtml"/></remarks>
+    public void UploadCompressedImageData(void* data, uint xOffset, uint yOffset, uint index, uint regionWidth, uint regionHeight, InternalFormat internalFormat, uint compressedDataSize, uint mipLevel = 0)
+    {
+        GL.CompressedTextureSubImage3D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)yOffset, (int)index, (int)regionWidth, (int)regionHeight, 1, internalFormat, (int)compressedDataSize, data);
+    }
+
+    /// <summary>
+    /// Uploads compressed image data into a region of this texture
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="data">Source data being uploaded</param>
+    /// <param name="xOffset">X offset into the destination texture</param>
+    /// <param name="yOffset">Y offset into the destination texture</param>
+    /// <param name="index">Index in the texture array to write to</param>
+    /// <param name="regionWidth">Width of the region to write to</param>
+    /// <param name="regionHeight">Height of the region to write to</param>
+    /// <param name="internalFormat">Internal format of the source data (must be compressed)</param>
+    /// <param name="compressedDataSize">Size in bytes of the souce data to copy</param>
+    /// <param name="mipLevel">Which mip level to write to</param>
+    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glCompressedTexSubImage3D.xhtml"/></remarks>
+    public void UploadCompressedImageData<T>(void* data, uint xOffset, uint yOffset, uint index, uint regionWidth, uint regionHeight, InternalFormat internalFormat, uint compressedDataSize, uint mipLevel = 0) where T : unmanaged
+    {
+        GL.CompressedTextureSubImage3D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)yOffset, (int)index, (int)regionWidth, (int)regionHeight, 1, internalFormat, (int)compressedDataSize, data);
+    }
+
+    /// <summary>
     /// Uploads image data into a region of this texture
     /// </summary>
     /// <typeparam name="T"></typeparam>
