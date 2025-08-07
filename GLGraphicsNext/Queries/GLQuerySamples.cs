@@ -1,10 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace GLGraphicsNext;
 public readonly unsafe struct GLQuerySamples : IDisposable, IEquatable<GLQuerySamples>
 {

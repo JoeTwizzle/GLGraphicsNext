@@ -1,10 +1,4 @@
-﻿using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
+using OpenTK.Mathematics;
 
 namespace GLGraphicsNext;
 
@@ -102,7 +96,7 @@ public readonly unsafe struct Texture1DArray : IDisposable, IEquatable<Texture1D
     }
 
     /// <inheritdoc cref="UploadImageData{T}(ReadOnlySpan{T}, uint, uint, uint, PixelFormat, PixelType, uint)"/>
-    public void UploadImageData(void* data, uint xOffset,  uint layer, uint regionWidth,  PixelFormat pixelFormat, PixelType pixelType, uint mipLevel = 0)
+    public void UploadImageData(void* data, uint xOffset, uint layer, uint regionWidth, PixelFormat pixelFormat, PixelType pixelType, uint mipLevel = 0)
     {
         GL.TextureSubImage2D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)layer, (int)regionWidth, 1, pixelFormat, pixelType, data);
     }

@@ -1,11 +1,5 @@
-﻿using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
+using OpenTK.Mathematics;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GLGraphicsNext;
 public readonly unsafe struct GLProgram : IDisposable, IEquatable<GLProgram>

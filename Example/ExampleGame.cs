@@ -1,4 +1,4 @@
-﻿using GLGraphicsNext;
+using GLGraphicsNext;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
@@ -41,12 +41,12 @@ internal sealed class ExampleGame : BasePal2Window
         }";
 
     readonly float[] vertices = //Vertices for our Square
-    {
-             0.5f,  0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            -0.5f,  0.5f, 0.0f
-    };
+    [
+        0.5f,  0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f,
+        -0.5f,  0.5f, 0.0f
+    ];
 
     readonly uint[] indices = [0, 1, 3, 1, 2, 3]; //Indices for our Square
     protected override void InitRenderer()

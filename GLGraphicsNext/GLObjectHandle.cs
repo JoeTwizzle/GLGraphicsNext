@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Reflection.Metadata;
+using System.Diagnostics;
 
 namespace GLGraphicsNext;
 

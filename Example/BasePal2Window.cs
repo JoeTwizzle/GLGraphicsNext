@@ -1,14 +1,7 @@
 using OpenTK.Core.Utility;
 using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Example;
 internal abstract class BasePal2Window
@@ -78,10 +71,11 @@ internal abstract class BasePal2Window
             // Destroy the window that the user wanted to close.
             Toolkit.Window.Destroy(closeArgs.Window);
         }
-        if (args is WindowResizeEventArgs resizeEventArgs)
-        {
-            FramebufferResized(new(resizeEventArgs.NewClientSize.X, resizeEventArgs.NewClientSize.Y));
-        }
+        //if (args is WindowResizeEventArgs resizeEventArgs)
+        //{
+        //    //TODO: this does not respect DPI scaling
+        //    FramebufferResized(new(resizeEventArgs.NewClientSize.X, resizeEventArgs.NewClientSize.Y));
+        //}
         if (args is WindowFramebufferResizeEventArgs framebufferResizeEventArgs)
         {
             FramebufferResized(new(framebufferResizeEventArgs.NewFramebufferSize.X, framebufferResizeEventArgs.NewFramebufferSize.Y));

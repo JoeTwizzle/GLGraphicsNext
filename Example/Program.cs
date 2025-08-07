@@ -1,9 +1,4 @@
-﻿namespace Example;
-
-using OpenTK.Core.Utility;
-using OpenTK.Graphics;
-using OpenTK.Platform;
-
+namespace Example;
 //Adaptation of the Opentk 5 Tutorial
 internal class Program
 {

@@ -1,9 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace GLGraphicsNext;
 public readonly struct GLQueryBase : IDisposable, IEquatable<GLQueryBase>
 {
@@ -26,7 +20,7 @@ public readonly struct GLQueryBase : IDisposable, IEquatable<GLQueryBase>
     }
 
 
-    
+
 
     public void Dispose()
     {

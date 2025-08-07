@@ -1,10 +1,4 @@
-﻿using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
+using OpenTK.Mathematics;
 
 namespace GLGraphicsNext;
 
@@ -53,7 +47,7 @@ public readonly unsafe struct TextureCubemap : IDisposable, IEquatable<TextureCu
 
     [Obsolete($"The paramaterless constructor or default({nameof(TextureCubemap)}) creates an invalid {nameof(TextureCubemap)}", true)]
     public TextureCubemap()
-    { 
+    {
         ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(TextureCubemap)}");
     }
 

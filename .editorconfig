@@ -1,4 +1,4 @@
-﻿[*.cs]
+[*.cs]
 
 # IDE0290: Use primary constructor
 csharp_style_prefer_primary_constructors = false:suggestion
@@ -21,6 +21,7 @@ csharp_style_unused_value_expression_statement_preference = discard_variable:sil
 csharp_prefer_static_local_function = true:suggestion
 csharp_prefer_static_anonymous_function = true:suggestion
 csharp_style_allow_embedded_statements_on_same_line_experimental = true:silent
+csharp_prefer_system_threading_lock = true:suggestion
 
 [*.{cs,vb}]
 #### Naming styles ####
@@ -90,3 +91,4 @@ dotnet_style_prefer_simplified_interpolation = true:suggestion
 dotnet_diagnostic.CA1051.severity = none
 dotnet_style_allow_statement_immediately_after_block_experimental = true:silent
 dotnet_diagnostic.CA1822.severity = silent
+dotnet_style_namespace_match_folder = true:silent
