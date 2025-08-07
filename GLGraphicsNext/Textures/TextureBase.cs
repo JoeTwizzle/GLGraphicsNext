@@ -10,9 +10,11 @@ public readonly struct TextureBase : IDisposable, IEquatable<TextureBase>
 {
     public readonly GLObjectHandle Handle;
 
-    [Obsolete($"The paramaterless constructor creates an invalid {nameof(TextureBase)}")]
+    [Obsolete($"The paramaterless constructor or default({nameof(TextureBase)}) creates an invalid {nameof(TextureBase)}", true)]
     public TextureBase()
-    { }
+    {
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(TextureBase)}");
+    }
 
     public TextureBase(GLObjectHandle handle)
     {

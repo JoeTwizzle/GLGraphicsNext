@@ -8,13 +8,14 @@ using System.Threading.Tasks;
 
 namespace GLGraphicsNext;
 
-public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
+public readonly unsafe struct Texture1DArray : IDisposable, IEquatable<Texture1DArray>
 {
     public readonly TextureBase RawTexture;
     public readonly uint Width;
+    public readonly uint Layers;
     public readonly uint MipLevels;
 
-    public Texture1D(Texture1D srcTexture, SizedInternalFormat viewFormat, uint firstMipLevel = 0, uint mipLevels = 0)
+    public Texture1DArray(Texture1DArray srcTexture, SizedInternalFormat viewFormat, uint firstLayer, uint layerCount, uint firstMipLevel = 0, uint mipLevels = 0)
     {
         if (mipLevels == 0)
         {
@@ -26,12 +27,13 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
         }
 
         RawTexture = new TextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
-        GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture1d, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, 0, 1);
+        GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture1dArray, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, 0, 1);
         Width = srcTexture.Width >> (int)firstMipLevel;
+        Layers = layerCount;
         MipLevels = mipLevels;
     }
 
-    public Texture1D(Texture1DArray srcTexture, SizedInternalFormat viewFormat, uint layer, uint firstMipLevel = 0, uint mipLevels = 0)
+    public Texture1DArray(Texture1D srcTexture, SizedInternalFormat viewFormat, CubemapFace face, uint firstMipLevel = 0, uint mipLevels = 0)
     {
         if (mipLevels == 0)
         {
@@ -43,33 +45,66 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
         }
 
         RawTexture = new TextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
-        GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture1d, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, layer, 1);
+        GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2d, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, (uint)face, 1);
         Width = srcTexture.Width >> (int)firstMipLevel;
+        Layers = 1;
         MipLevels = mipLevels;
     }
 
-    [Obsolete($"The paramaterless constructor creates an invalid {nameof(Texture1D)}")]
-    public Texture1D()
-    { }
+    [Obsolete($"The paramaterless constructor or default({nameof(Texture1DArray)}) creates an invalid {nameof(Texture1DArray)}", true)]
+    public Texture1DArray()
+    {
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(Texture1DArray)}");
+    }
 
-    public Texture1D(TextureBase rawTexture)
+    public Texture1DArray(TextureBase rawTexture)
     {
         RawTexture = rawTexture;
         Width = RawTexture.GetWidth();
+        Layers = RawTexture.GetHeight();
         MipLevels = RawTexture.GetMipmapLevels();
     }
 
-    public Texture1D(uint width, SizedInternalFormat sizedInternalFormat, uint mipLevels = 1)
+    public Texture1DArray(uint width, uint layers, SizedInternalFormat sizedInternalFormat, uint mipLevels = 1)
     {
         Width = width;
+        Layers = layers;
         MipLevels = mipLevels;
-        RawTexture = new TextureBase(TextureTarget.Texture1d);
-        GL.TextureStorage1D(RawTexture.Handle.Value, (int)mipLevels, sizedInternalFormat, (int)width);
+        RawTexture = new TextureBase(TextureTarget.Texture1dArray);
+        GL.TextureStorage2D(RawTexture.Handle.Value, (int)mipLevels, sizedInternalFormat, (int)width, (int)layers);
     }
 
     public SizedInternalFormat GetSizedInternalFormat()
     {
         return RawTexture.GetSizedInternalFormat();
+    }
+    /// <summary>
+    /// Uploads image data into a region of this texture
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="data">Source data being uploaded</param>
+    /// <param name="region">Region of texture to write to</param>
+    /// <param name="layer">Layer in the texture array to write to</param>
+    /// <param name="pixelFormat">PixelFormat of the source data</param>
+    /// <param name="pixelType">PixelType of the souce data</param>
+    /// <param name="mipLevel">Which mip level to write to</param>
+    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage3D.xhtml"/></remarks>
+    public void UploadImageData(void* data, Range range, int layer, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0)
+    {
+        var (offset, length) = range.GetOffsetAndLength((int)Width);
+        UploadImageData(data, (uint)offset, (uint)layer, (uint)length, pixelFormat, pixelType, (uint)mipLevel);
+    }
+
+    /// <inheritdoc cref="UploadImageData{T}(ReadOnlySpan{T}, uint, uint, uint, PixelFormat, PixelType, uint)"/>
+    public void UploadImageData(void* data, int xOffset, int layer, int regionWidth, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0)
+    {
+        UploadImageData(data, (uint)xOffset, (uint)layer, (uint)regionWidth, pixelFormat, pixelType, (uint)mipLevel);
+    }
+
+    /// <inheritdoc cref="UploadImageData{T}(ReadOnlySpan{T}, uint, uint, uint, PixelFormat, PixelType, uint)"/>
+    public void UploadImageData(void* data, uint xOffset,  uint layer, uint regionWidth,  PixelFormat pixelFormat, PixelType pixelType, uint mipLevel = 0)
+    {
+        GL.TextureSubImage2D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)layer, (int)regionWidth, 1, pixelFormat, pixelType, data);
     }
 
     /// <summary>
@@ -78,49 +113,21 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
     /// <typeparam name="T"></typeparam>
     /// <param name="data">Source data being uploaded</param>
     /// <param name="range">Region of texture to write to</param>
+    /// <param name="layer">Layer in the texture array to write to</param>
     /// <param name="pixelFormat">PixelFormat of the source data</param>
     /// <param name="pixelType">PixelType of the souce data</param>
     /// <param name="mipLevel">Which mip level to write to</param>
-    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage2D.xhtml"/></remarks>
-    public void UploadImageData(void* data, Range range, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0)
+    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage3D.xhtml"/></remarks>
+    public void UploadImageData<T>(ReadOnlySpan<T> data, Range range, int layer, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0) where T : unmanaged
     {
         var (offset, length) = range.GetOffsetAndLength((int)Width);
-        UploadImageData(data, (uint)offset, (uint)length, pixelFormat, pixelType, (uint)mipLevel);
+        UploadImageData(data, (uint)offset, (uint)layer, (uint)length, pixelFormat, pixelType, (uint)mipLevel);
     }
 
-    /// <inheritdoc cref="UploadImageData{T}(ReadOnlySpan{T}, uint, uint, uint, uint, PixelFormat, PixelType, uint)"/>
-    public void UploadImageData(void* data, int xOffset, int regionWidth, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0)
+    /// <inheritdoc cref="UploadImageData{T}(ReadOnlySpan{T}, uint, uint, uint, PixelFormat, PixelType, uint)"/>
+    public void UploadImageData<T>(ReadOnlySpan<T> data, int xOffset, int layer, int regionWidth, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0) where T : unmanaged
     {
-        UploadImageData(data, (uint)xOffset, (uint)regionWidth, pixelFormat, pixelType, (uint)mipLevel);
-    }
-
-    /// <inheritdoc cref="UploadImageData{T}(ReadOnlySpan{T}, uint, uint, uint, uint, PixelFormat, PixelType, uint)"/>
-    public void UploadImageData(void* data, uint xOffset, uint regionWidth, PixelFormat pixelFormat, PixelType pixelType, uint mipLevel = 0)
-    {
-        GL.TextureSubImage1D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)regionWidth, pixelFormat, pixelType, data);
-    }
-
-
-    /// <summary>
-    /// Uploads image data into a region of this texture
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="data">Source data being uploaded</param>
-    /// <param name="region">Region of texture to write to</param>
-    /// <param name="pixelFormat">PixelFormat of the source data</param>
-    /// <param name="pixelType">PixelType of the souce data</param>
-    /// <param name="mipLevel">Which mip level to write to</param>
-    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage2D.xhtml"/></remarks>
-    public void UploadImageData<T>(ReadOnlySpan<T> data, Range range, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0) where T : unmanaged
-    {
-        var (offset, length) = range.GetOffsetAndLength((int)Width);
-        UploadImageData(data, (uint)offset, (uint)length, pixelFormat, pixelType, (uint)mipLevel);
-    }
-
-    /// <inheritdoc cref="UploadImageData{T}(ReadOnlySpan{T}, uint, uint, PixelFormat, PixelType, uint)"/>
-    public void UploadImageData<T>(ReadOnlySpan<T> data, int xOffset, int regionWidth, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0) where T : unmanaged
-    {
-        UploadImageData(data, (uint)xOffset, (uint)regionWidth, pixelFormat, pixelType, (uint)mipLevel);
+        UploadImageData(data, (uint)xOffset, (uint)layer, (uint)regionWidth, pixelFormat, pixelType, (uint)mipLevel);
     }
 
     /// <summary>
@@ -129,17 +136,17 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
     /// <typeparam name="T"></typeparam>
     /// <param name="data">Source data being uploaded</param>
     /// <param name="xOffset">X offset into the destination texture</param>
+    /// <param name="layer">Layer in the texture array to write to</param>
     /// <param name="regionWidth">Width of the region to write to</param>
     /// <param name="pixelFormat">PixelFormat of the source data</param>
     /// <param name="pixelType">PixelType of the souce data</param>
     /// <param name="mipLevel">Which mip level to write to</param>
-    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage2D.xhtml"/></remarks>
-    public void UploadImageData<T>(ReadOnlySpan<T> data, uint xOffset, uint regionWidth, PixelFormat pixelFormat, PixelType pixelType, uint mipLevel = 0) where T : unmanaged
+    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage3D.xhtml"/></remarks>
+    public void UploadImageData<T>(ReadOnlySpan<T> data, uint xOffset, uint layer, uint regionWidth, PixelFormat pixelFormat, PixelType pixelType, uint mipLevel = 0) where T : unmanaged
     {
         ArgumentOutOfRangeException.ThrowIfLessThan((uint)data.Length, regionWidth);
-        GL.TextureSubImage1D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)regionWidth, pixelFormat, pixelType, data);
+        GL.TextureSubImage2D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)layer, (int)regionWidth, 1, pixelFormat, pixelType, data);
     }
-
     /// <summary>
     /// Generates mipmaps based on information present at mip level 0
     /// </summary>
@@ -213,7 +220,7 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
 
     public override bool Equals(object? obj)
     {
-        return obj is Texture1D gl && Equals(gl);
+        return obj is Texture1DArray gl && Equals(gl);
     }
 
     public override int GetHashCode()
@@ -221,17 +228,17 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
         return RawTexture.GetHashCode();
     }
 
-    public static bool operator ==(Texture1D left, Texture1D right)
+    public static bool operator ==(Texture1DArray left, Texture1DArray right)
     {
         return left.Equals(right);
     }
 
-    public static bool operator !=(Texture1D left, Texture1D right)
+    public static bool operator !=(Texture1DArray left, Texture1DArray right)
     {
         return !(left == right);
     }
 
-    public bool Equals(Texture1D other)
+    public bool Equals(Texture1DArray other)
     {
         return RawTexture.Equals(other.RawTexture);
     }

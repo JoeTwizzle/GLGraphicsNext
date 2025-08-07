@@ -9,14 +9,20 @@ public readonly struct GLObjectHandle : IDisposable, IEquatable<GLObjectHandle>
     public readonly GLObjectType ObjectType;
     public bool IsValid => Value != 0 && ObjectType != GLObjectType.None;
 
-    [Obsolete($"The paramaterless constructor creates an invalid {nameof(GLObjectHandle)}")]
+    [Obsolete($"The paramaterless constructor or default({nameof(GLObjectHandle)}) creates an invalid {nameof(GLObjectHandle)}", true)]
     public GLObjectHandle()
-    { }
+    {
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(GLObjectHandle)}");
+    }
 
     public GLObjectHandle(int value, GLObjectType objectType)
     {
         Value = value;
         ObjectType = objectType;
+    }
+    public static GLObjectHandle Create(int value, GLObjectType objectType)
+    {
+        return new GLObjectHandle(value, objectType);
     }
 
     public void Dispose()

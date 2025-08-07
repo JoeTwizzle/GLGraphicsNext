@@ -12,9 +12,11 @@ public readonly struct GLShader : IDisposable, IEquatable<GLShader>
 {
     public readonly GLObjectHandle Handle;
 
-    [Obsolete($"The paramaterless constructor creates an invalid {nameof(GLShader)}")]
+    [Obsolete($"The paramaterless constructor or default({nameof(GLShader)}) creates an invalid {nameof(GLShader)}", true)]
     public GLShader()
-    { }
+    {
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(GLShader)}");
+    }
 
     public GLShader(GLObjectHandle handle)
     {

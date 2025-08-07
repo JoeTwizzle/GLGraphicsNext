@@ -6,9 +6,11 @@ public readonly unsafe struct GLBuffer : IDisposable, IEquatable<GLBuffer>
     public readonly GLObjectHandle Handle;
     public readonly nuint SizeInBytes;
 
-    [Obsolete($"The paramaterless constructor creates an invalid {nameof(GLBuffer)}")]
+    [Obsolete($"The paramaterless constructor or default({nameof(GLBuffer)}) creates an invalid {nameof(GLBuffer)}", true)]
     public GLBuffer()
-    { }
+    {
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(GLBuffer)}");
+    }
 
     public GLBuffer(GLObjectHandle handle)
     {
@@ -212,9 +214,11 @@ public readonly unsafe struct GLBuffer<T> : IDisposable, IEquatable<GLBuffer<T>>
     public readonly GLBuffer RawBuffer;
     public nuint Length => RawBuffer.SizeInBytes / (nuint)Unsafe.SizeOf<T>();
 
-    [Obsolete($"The paramaterless constructor creates an invalid {nameof(GLBuffer<T>)}")]
+    [Obsolete($"The paramaterless constructor or default({nameof(GLBuffer<T>)}) creates an invalid {nameof(GLBuffer<T>)}", true)]
     public GLBuffer()
-    { }
+    {
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(GLBuffer<T>)}");
+    }
 
     public GLBuffer(GLBuffer rawBuffer)
     {

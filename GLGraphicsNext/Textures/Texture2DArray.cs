@@ -8,14 +8,15 @@ using System.Threading.Tasks;
 
 namespace GLGraphicsNext;
 
-public readonly unsafe struct Texture2D : IDisposable, IEquatable<Texture2D>
+public readonly unsafe struct Texture2DArray : IDisposable, IEquatable<Texture2DArray>
 {
     public readonly TextureBase RawTexture;
     public readonly uint Width;
     public readonly uint Height;
     public readonly uint MipLevels;
+    public readonly uint Layers;
 
-    public Texture2D(Texture2D srcTexture, SizedInternalFormat viewFormat, uint firstMipLevel = 0, uint mipLevels = 0)
+    public Texture2DArray(Texture2D srcTexture, SizedInternalFormat viewFormat, uint firstMipLevel = 0, uint mipLevels = 0)
     {
         if (mipLevels == 0)
         {
@@ -27,13 +28,14 @@ public readonly unsafe struct Texture2D : IDisposable, IEquatable<Texture2D>
         }
 
         RawTexture = new TextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
-        GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2d, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, 0, 1);
+        GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2dArray, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, 0, 1);
         Width = srcTexture.Width >> (int)firstMipLevel;
         Height = srcTexture.Height >> (int)firstMipLevel;
+        Layers = 1;
         MipLevels = mipLevels;
     }
 
-    public Texture2D(TextureCubemap srcTexture, SizedInternalFormat viewFormat, CubemapFace face, uint firstMipLevel = 0, uint mipLevels = 0)
+    public Texture2DArray(TextureCubemap srcTexture, SizedInternalFormat viewFormat, CubemapFace firstFace, uint faceCount, uint firstMipLevel = 0, uint mipLevels = 0)
     {
         if (mipLevels == 0)
         {
@@ -45,13 +47,14 @@ public readonly unsafe struct Texture2D : IDisposable, IEquatable<Texture2D>
         }
 
         RawTexture = new TextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
-        GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2d, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, (uint)face, 1);
+        GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2dArray, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, (uint)firstFace, faceCount);
         Width = srcTexture.Width >> (int)firstMipLevel;
         Height = srcTexture.Height >> (int)firstMipLevel;
+        Layers = faceCount;
         MipLevels = mipLevels;
     }
 
-    public Texture2D(Texture2DArray srcTexture, SizedInternalFormat viewFormat, uint layer, uint firstMipLevel = 0, uint mipLevels = 0)
+    public Texture2DArray(Texture2DArray srcTexture, SizedInternalFormat viewFormat, uint firstLayer, uint layerCount, uint firstMipLevel = 0, uint mipLevels = 0)
     {
         if (mipLevels == 0)
         {
@@ -63,13 +66,14 @@ public readonly unsafe struct Texture2D : IDisposable, IEquatable<Texture2D>
         }
 
         RawTexture = new TextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
-        GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2d, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, layer, 1);
+        GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2dArray, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, firstLayer, layerCount);
         Width = srcTexture.Width >> (int)firstMipLevel;
         Height = srcTexture.Height >> (int)firstMipLevel;
+        Layers = layerCount;
         MipLevels = mipLevels;
     }
 
-    public Texture2D(TextureCubemapArray srcTexture, SizedInternalFormat viewFormat, uint layer, CubemapFace face, uint firstMipLevel = 0, uint mipLevels = 0)
+    public Texture2DArray(TextureCubemapArray srcTexture, SizedInternalFormat viewFormat, CubemapFace firstFace, uint faceCount, uint firstLayer, uint layerCount, uint firstMipLevel = 0, uint mipLevels = 0)
     {
         if (mipLevels == 0)
         {
@@ -81,31 +85,36 @@ public readonly unsafe struct Texture2D : IDisposable, IEquatable<Texture2D>
         }
 
         RawTexture = new TextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
-        GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2d, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, layer * 6 + (uint)face, 1);
+        GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2dArray, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, firstLayer * 6 + (uint)firstFace, layerCount * 6 + faceCount);
         Width = srcTexture.Width >> (int)firstMipLevel;
         Height = srcTexture.Height >> (int)firstMipLevel;
+        Layers = layerCount * 6 + faceCount;
         MipLevels = mipLevels;
     }
 
-    [Obsolete($"The paramaterless constructor creates an invalid {nameof(Texture2D)}")]
-    public Texture2D()
-    { }
+    [Obsolete($"The paramaterless constructor or default({nameof(Texture2DArray)}) creates an invalid {nameof(Texture2DArray)}", true)]
+    public Texture2DArray()
+    {
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(Texture2DArray)}");
+    }
 
-    public Texture2D(TextureBase rawTexture)
+    public Texture2DArray(TextureBase rawTexture)
     {
         RawTexture = rawTexture;
         Width = RawTexture.GetWidth();
         Height = RawTexture.GetHeight();
+        Layers = RawTexture.GetDepth();
         MipLevels = RawTexture.GetMipmapLevels();
     }
 
-    public Texture2D(uint width, uint height, SizedInternalFormat sizedInternalFormat, uint mipLevels = 1)
+    public Texture2DArray(uint width, uint height, uint layers, SizedInternalFormat sizedInternalFormat, uint mipLevels = 1)
     {
         Width = width;
         Height = height;
+        Layers = layers;
         MipLevels = mipLevels;
-        RawTexture = new TextureBase(TextureTarget.Texture2d);
-        GL.TextureStorage2D(RawTexture.Handle.Value, (int)mipLevels, sizedInternalFormat, (int)width, (int)height);
+        RawTexture = new TextureBase(TextureTarget.Texture2dArray);
+        GL.TextureStorage3D(RawTexture.Handle.Value, (int)mipLevels, sizedInternalFormat, (int)width, (int)height, (int)layers);
     }
 
     public SizedInternalFormat GetSizedInternalFormat()
@@ -119,27 +128,27 @@ public readonly unsafe struct Texture2D : IDisposable, IEquatable<Texture2D>
     /// <typeparam name="T"></typeparam>
     /// <param name="data">Source data being uploaded</param>
     /// <param name="region">Region of texture to write to</param>
+    /// <param name="index">Index in the texture array to write to</param>
     /// <param name="pixelFormat">PixelFormat of the source data</param>
     /// <param name="pixelType">PixelType of the souce data</param>
     /// <param name="mipLevel">Which mip level to write to</param>
-    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage2D.xhtml"/></remarks>
-    public void UploadImageData(void* data, Box2i region, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0)
+    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage3D.xhtml"/></remarks>
+    public void UploadImageData(void* data, Box2i region, int index, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0)
     {
-        UploadImageData(data, (uint)region.X, (uint)region.Y, (uint)region.SizeX, (uint)region.SizeY, pixelFormat, pixelType, (uint)mipLevel);
+        UploadImageData(data, (uint)region.X, (uint)region.Y, (uint)index, (uint)region.SizeX, (uint)region.SizeY, pixelFormat, pixelType, (uint)mipLevel);
     }
 
     /// <inheritdoc cref="UploadImageData{T}(ReadOnlySpan{T}, uint, uint, uint, uint, PixelFormat, PixelType, uint)"/>
-    public void UploadImageData(void* data, int xOffset, int yOffset, int regionWidth, int regionHeight, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0)
+    public void UploadImageData(void* data, int xOffset, int yOffset, int index, int regionWidth, int regionHeight, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0)
     {
-        UploadImageData(data, (uint)xOffset, (uint)yOffset, (uint)regionWidth, (uint)regionHeight, pixelFormat, pixelType, (uint)mipLevel);
+        UploadImageData(data, (uint)xOffset, (uint)yOffset, (uint)index, (uint)regionWidth, (uint)regionHeight, pixelFormat, pixelType, (uint)mipLevel);
     }
 
     /// <inheritdoc cref="UploadImageData{T}(ReadOnlySpan{T}, uint, uint, uint, uint, PixelFormat, PixelType, uint)"/>
-    public void UploadImageData(void* data, uint xOffset, uint yOffset, uint regionWidth, uint regionHeight, PixelFormat pixelFormat, PixelType pixelType, uint mipLevel = 0)
+    public void UploadImageData(void* data, uint xOffset, uint yOffset, uint index, uint regionWidth, uint regionHeight, PixelFormat pixelFormat, PixelType pixelType, uint mipLevel = 0)
     {
-        GL.TextureSubImage2D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)yOffset, (int)regionWidth, (int)regionHeight, pixelFormat, pixelType, data);
+        GL.TextureSubImage3D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)yOffset, (int)index, (int)regionWidth, (int)regionHeight, 1, pixelFormat, pixelType, data);
     }
-
 
     /// <summary>
     /// Uploads image data into a region of this texture
@@ -147,19 +156,20 @@ public readonly unsafe struct Texture2D : IDisposable, IEquatable<Texture2D>
     /// <typeparam name="T"></typeparam>
     /// <param name="data">Source data being uploaded</param>
     /// <param name="region">Region of texture to write to</param>
+    /// <param name="index">Index in the texture array to write to</param>
     /// <param name="pixelFormat">PixelFormat of the source data</param>
     /// <param name="pixelType">PixelType of the souce data</param>
     /// <param name="mipLevel">Which mip level to write to</param>
-    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage2D.xhtml"/></remarks>
-    public void UploadImageData<T>(ReadOnlySpan<T> data, Box2i region, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0) where T : unmanaged
+    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage3D.xhtml"/></remarks>
+    public void UploadImageData<T>(ReadOnlySpan<T> data, Box2i region, int index, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0) where T : unmanaged
     {
-        UploadImageData(data, (uint)region.X, (uint)region.Y, (uint)region.SizeX, (uint)region.SizeY, pixelFormat, pixelType, (uint)mipLevel);
+        UploadImageData(data, (uint)region.X, (uint)region.Y, (uint)index, (uint)region.SizeX, (uint)region.SizeY, pixelFormat, pixelType, (uint)mipLevel);
     }
 
-    /// <inheritdoc cref="UploadImageData{T}(ReadOnlySpan{T}, uint, uint, uint, uint, PixelFormat, PixelType, uint)"/>
-    public void UploadImageData<T>(ReadOnlySpan<T> data, int xOffset, int yOffset, int regionWidth, int regionHeight, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0) where T : unmanaged
+    /// <inheritdoc cref="UploadImageData{T}(ReadOnlySpan{T}, uint, uint, uint, uint, uint, PixelFormat, PixelType, uint)"/>
+    public void UploadImageData<T>(ReadOnlySpan<T> data, int xOffset, int yOffset, int index, int regionWidth, int regionHeight, PixelFormat pixelFormat, PixelType pixelType, int mipLevel = 0) where T : unmanaged
     {
-        UploadImageData(data, (uint)xOffset, (uint)yOffset, (uint)regionWidth, (uint)regionHeight, pixelFormat, pixelType, (uint)mipLevel);
+        UploadImageData(data, (uint)xOffset, (uint)yOffset, (uint)index, (uint)regionWidth, (uint)regionHeight, pixelFormat, pixelType, (uint)mipLevel);
     }
 
     /// <summary>
@@ -169,16 +179,17 @@ public readonly unsafe struct Texture2D : IDisposable, IEquatable<Texture2D>
     /// <param name="data">Source data being uploaded</param>
     /// <param name="xOffset">X offset into the destination texture</param>
     /// <param name="yOffset">Y offset into the destination texture</param>
+    /// <param name="index">Index in the texture array to write to</param>
     /// <param name="regionWidth">Width of the region to write to</param>
     /// <param name="regionHeight">Height of the region to write to</param>
     /// <param name="pixelFormat">PixelFormat of the source data</param>
     /// <param name="pixelType">PixelType of the souce data</param>
     /// <param name="mipLevel">Which mip level to write to</param>
-    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage2D.xhtml"/></remarks>
-    public void UploadImageData<T>(ReadOnlySpan<T> data, uint xOffset, uint yOffset, uint regionWidth, uint regionHeight, PixelFormat pixelFormat, PixelType pixelType, uint mipLevel = 0) where T : unmanaged
+    /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexSubImage3D.xhtml"/></remarks>
+    public void UploadImageData<T>(ReadOnlySpan<T> data, uint xOffset, uint yOffset, uint index, uint regionWidth, uint regionHeight, PixelFormat pixelFormat, PixelType pixelType, uint mipLevel = 0) where T : unmanaged
     {
         ArgumentOutOfRangeException.ThrowIfLessThan((uint)data.Length, regionWidth * regionHeight);
-        GL.TextureSubImage2D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)yOffset, (int)regionWidth, (int)regionHeight, pixelFormat, pixelType, data);
+        GL.TextureSubImage3D(RawTexture.Handle.Value, (int)mipLevel, (int)xOffset, (int)yOffset, (int)index, (int)regionWidth, (int)regionHeight, 1, pixelFormat, pixelType, data);
     }
 
     /// <summary>
@@ -193,22 +204,10 @@ public readonly unsafe struct Texture2D : IDisposable, IEquatable<Texture2D>
     /// <summary>
     /// Fills a mip level of a texture with a specific color value
     /// </summary>
-    /// <param name="clearColor">The RGBA color to fill the texture with</param>
+    /// <param name="clearColor">The value to fill the texture with</param>
     /// <param name="level">The mip level to fill</param>
     /// <remarks><see href="https://registry.khronos.org/OpenGL-Refpages/gl4/html/glClearTexImage.xhtml"/></remarks>
     public void Clear(Vector4 clearColor, int level = 0)
-    {
-        GL.ClearTexImage(RawTexture.Handle.Value, level, PixelFormat.Rgba, PixelType.Float, ref clearColor);
-    }
-
-    /// <inheritdoc cref="Clear(Vector4, int)"/>
-    public void Clear(Vec4 clearColor, int level = 0)
-    {
-        GL.ClearTexImage(RawTexture.Handle.Value, level, PixelFormat.Rgba, PixelType.Float, ref clearColor);
-    }
-
-    /// <inheritdoc cref="Clear(Vector4, int)"/>
-    public void Clear(Color4<Rgba> clearColor, int level = 0)
     {
         GL.ClearTexImage(RawTexture.Handle.Value, level, PixelFormat.Rgba, PixelType.Float, ref clearColor);
     }
@@ -254,7 +253,7 @@ public readonly unsafe struct Texture2D : IDisposable, IEquatable<Texture2D>
 
     public override bool Equals(object? obj)
     {
-        return obj is Texture2D gl && Equals(gl);
+        return obj is Texture2DArray gl && Equals(gl);
     }
 
     public override int GetHashCode()
@@ -262,17 +261,17 @@ public readonly unsafe struct Texture2D : IDisposable, IEquatable<Texture2D>
         return RawTexture.GetHashCode();
     }
 
-    public static bool operator ==(Texture2D left, Texture2D right)
+    public static bool operator ==(Texture2DArray left, Texture2DArray right)
     {
         return left.Equals(right);
     }
 
-    public static bool operator !=(Texture2D left, Texture2D right)
+    public static bool operator !=(Texture2DArray left, Texture2DArray right)
     {
         return !(left == right);
     }
 
-    public bool Equals(Texture2D other)
+    public bool Equals(Texture2DArray other)
     {
         return RawTexture.Equals(other.RawTexture);
     }

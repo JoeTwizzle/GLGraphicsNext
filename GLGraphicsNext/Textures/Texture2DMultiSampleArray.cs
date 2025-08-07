@@ -8,45 +8,52 @@ using System.Threading.Tasks;
 
 namespace GLGraphicsNext;
 
-public readonly unsafe struct Texture2DMultiSample : IDisposable, IEquatable<Texture2DMultiSample>
+public readonly unsafe struct Texture2DMultiSampleArray : IDisposable, IEquatable<Texture2DMultiSampleArray>
 {
     public readonly TextureBase RawTexture;
     public readonly uint Width;
     public readonly uint Height;
+    public readonly uint Layers;
 
-    public Texture2DMultiSample(Texture2DMultiSample srcTexture, SizedInternalFormat viewFormat)
+    public Texture2DMultiSampleArray(Texture2DMultiSample srcTexture, SizedInternalFormat viewFormat)
     {
         RawTexture = new TextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
-        GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2dMultisample, srcTexture.RawTexture.Handle.Value, viewFormat, 0, 1, 0, 1);
+        GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2dMultisampleArray, srcTexture.RawTexture.Handle.Value, viewFormat, 0, 1, 0, 1);
         Width = srcTexture.Width;
         Height = srcTexture.Height;
+        Layers = 1;
     }
 
-    public Texture2DMultiSample(Texture2DMultiSampleArray srcTexture, SizedInternalFormat viewFormat, uint layer)
+    public Texture2DMultiSampleArray(Texture2DMultiSampleArray srcTexture, SizedInternalFormat viewFormat, uint firstLayer, uint layerCount)
     {
         RawTexture = new TextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
-        GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2dMultisample, srcTexture.RawTexture.Handle.Value, viewFormat, 0, 1, layer, 1);
+        GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2dMultisampleArray, srcTexture.RawTexture.Handle.Value, viewFormat, 0, 1, firstLayer, layerCount);
         Width = srcTexture.Width;
         Height = srcTexture.Height;
+        Layers = layerCount;
     }
 
-    [Obsolete($"The paramaterless constructor creates an invalid {nameof(Texture2DMultiSample)}")]
-    public Texture2DMultiSample()
-    { }
+    [Obsolete($"The paramaterless constructor or default({nameof(Texture2DMultiSampleArray)}) creates an invalid {nameof(Texture2DMultiSampleArray)}", true)]
+    public Texture2DMultiSampleArray()
+    {
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(Texture2DMultiSampleArray)}");
+    }
 
-    public Texture2DMultiSample(TextureBase rawTexture)
+    public Texture2DMultiSampleArray(TextureBase rawTexture)
     {
         RawTexture = rawTexture;
         Width = RawTexture.GetWidth();
         Height = RawTexture.GetHeight();
+        Layers = RawTexture.GetDepth();
     }
 
-    public Texture2DMultiSample(uint width, uint height, uint sampleCount, SizedInternalFormat sizedInternalFormat, bool useFixedSampleLocations = false)
+    public Texture2DMultiSampleArray(uint width, uint height, uint layers, uint sampleCount, SizedInternalFormat sizedInternalFormat, bool useFixedSampleLocations = false)
     {
         Width = width;
         Height = height;
-        RawTexture = new TextureBase(TextureTarget.Texture2dMultisample);
-        GL.TextureStorage2DMultisample(RawTexture.Handle.Value, (int)sampleCount, sizedInternalFormat, (int)width, (int)height, useFixedSampleLocations);
+        Layers = layers;
+        RawTexture = new TextureBase(TextureTarget.Texture2dMultisampleArray);
+        GL.TextureStorage3DMultisample(RawTexture.Handle.Value, (int)sampleCount, sizedInternalFormat, (int)width, (int)height, (int)layers, useFixedSampleLocations);
     }
 
     public SizedInternalFormat GetSizedInternalFormat()
@@ -106,7 +113,7 @@ public readonly unsafe struct Texture2DMultiSample : IDisposable, IEquatable<Tex
 
     public override bool Equals(object? obj)
     {
-        return obj is Texture2DMultiSample gl && Equals(gl);
+        return obj is Texture2DMultiSampleArray gl && Equals(gl);
     }
 
     public override int GetHashCode()
@@ -114,17 +121,17 @@ public readonly unsafe struct Texture2DMultiSample : IDisposable, IEquatable<Tex
         return RawTexture.GetHashCode();
     }
 
-    public static bool operator ==(Texture2DMultiSample left, Texture2DMultiSample right)
+    public static bool operator ==(Texture2DMultiSampleArray left, Texture2DMultiSampleArray right)
     {
         return left.Equals(right);
     }
 
-    public static bool operator !=(Texture2DMultiSample left, Texture2DMultiSample right)
+    public static bool operator !=(Texture2DMultiSampleArray left, Texture2DMultiSampleArray right)
     {
         return !(left == right);
     }
 
-    public bool Equals(Texture2DMultiSample other)
+    public bool Equals(Texture2DMultiSampleArray other)
     {
         return RawTexture.Equals(other.RawTexture);
     }
