@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 
 namespace GLGraphicsNext;
 public readonly unsafe struct GLBuffer : IDisposable, IEquatable<GLBuffer>
