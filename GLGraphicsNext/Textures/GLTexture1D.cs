@@ -2,13 +2,16 @@ using OpenTK.Mathematics;
 
 namespace GLGraphicsNext;
 
-public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
+/// <summary>
+/// An OpenGL Texture object with one dimension to its data. 
+/// </summary>
+public readonly unsafe struct GLTexture1D : IDisposable, IEquatable<GLTexture1D>
 {
-    public readonly TextureBase RawTexture;
+    public readonly GLTextureBase RawTexture;
     public readonly uint Width;
     public readonly uint MipLevels;
 
-    public Texture1D(Texture1D srcTexture, SizedInternalFormat viewFormat, uint firstMipLevel = 0, uint mipLevels = 0)
+    public GLTexture1D(GLTexture1D srcTexture, SizedInternalFormat viewFormat, uint firstMipLevel = 0, uint mipLevels = 0)
     {
         if (mipLevels == 0)
         {
@@ -19,13 +22,13 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
             mipLevels = (uint)lvls;
         }
 
-        RawTexture = new TextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
+        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), ObjectType.Texture));
         GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture1d, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, 0, 1);
         Width = srcTexture.Width >> (int)firstMipLevel;
         MipLevels = mipLevels;
     }
 
-    public Texture1D(Texture1DArray srcTexture, SizedInternalFormat viewFormat, uint layer, uint firstMipLevel = 0, uint mipLevels = 0)
+    public GLTexture1D(GLTexture1DArray srcTexture, SizedInternalFormat viewFormat, uint layer, uint firstMipLevel = 0, uint mipLevels = 0)
     {
         if (mipLevels == 0)
         {
@@ -36,30 +39,30 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
             mipLevels = (uint)lvls;
         }
 
-        RawTexture = new TextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
+        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), ObjectType.Texture));
         GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture1d, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, layer, 1);
         Width = srcTexture.Width >> (int)firstMipLevel;
         MipLevels = mipLevels;
     }
 
-    [Obsolete($"The paramaterless constructor or default({nameof(Texture1D)}) creates an invalid {nameof(Texture1D)}", true)]
-    public Texture1D()
+    [Obsolete($"The paramaterless constructor or default({nameof(GLTexture1D)}) creates an invalid {nameof(GLTexture1D)}", true)]
+    public GLTexture1D()
     {
-        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(Texture1D)}");
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(GLTexture1D)}");
     }
 
-    public Texture1D(TextureBase rawTexture)
+    public GLTexture1D(GLTextureBase rawTexture)
     {
         RawTexture = rawTexture;
         Width = RawTexture.GetWidth();
         MipLevels = RawTexture.GetMipmapLevels();
     }
 
-    public Texture1D(uint width, SizedInternalFormat sizedInternalFormat, uint mipLevels = 1)
+    public GLTexture1D(uint width, SizedInternalFormat sizedInternalFormat, uint mipLevels = 1)
     {
         Width = width;
         MipLevels = mipLevels;
-        RawTexture = new TextureBase(TextureTarget.Texture1d);
+        RawTexture = new GLTextureBase(TextureTarget.Texture1d);
         GL.TextureStorage1D(RawTexture.Handle.Value, (int)mipLevels, sizedInternalFormat, (int)width);
     }
 
@@ -248,7 +251,7 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
 
     public override bool Equals(object? obj)
     {
-        return obj is Texture1D gl && Equals(gl);
+        return obj is GLTexture1D gl && Equals(gl);
     }
 
     public override int GetHashCode()
@@ -256,17 +259,17 @@ public readonly unsafe struct Texture1D : IDisposable, IEquatable<Texture1D>
         return RawTexture.GetHashCode();
     }
 
-    public static bool operator ==(Texture1D left, Texture1D right)
+    public static bool operator ==(GLTexture1D left, GLTexture1D right)
     {
         return left.Equals(right);
     }
 
-    public static bool operator !=(Texture1D left, Texture1D right)
+    public static bool operator !=(GLTexture1D left, GLTexture1D right)
     {
         return !(left == right);
     }
 
-    public bool Equals(Texture1D other)
+    public bool Equals(GLTexture1D other)
     {
         return RawTexture.Equals(other.RawTexture);
     }

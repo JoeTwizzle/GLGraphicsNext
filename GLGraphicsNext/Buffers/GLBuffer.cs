@@ -1,6 +1,11 @@
 using System.Runtime.CompilerServices;
 
 namespace GLGraphicsNext;
+
+/// <summary>
+/// An OpenGL Buffer object.
+/// Stores data in GPU memory.
+/// </summary>
 public readonly unsafe struct GLBuffer : IDisposable, IEquatable<GLBuffer>
 {
     public readonly GLObjectHandle Handle;
@@ -26,7 +31,7 @@ public readonly unsafe struct GLBuffer : IDisposable, IEquatable<GLBuffer>
 
     public GLBuffer(nuint sizeInBytes, BufferStorageMask bufferStorageMask = BufferStorageMask.DynamicStorageBit)
     {
-        Handle = new GLObjectHandle(GL.CreateBuffer(), GLObjectType.Buffer);
+        Handle = new GLObjectHandle(GL.CreateBuffer(), ObjectType.Buffer);
         SizeInBytes = sizeInBytes;
         GL.NamedBufferStorage(Handle.Value, (nint)sizeInBytes, (void*)0, bufferStorageMask);
     }
@@ -37,17 +42,18 @@ public readonly unsafe struct GLBuffer : IDisposable, IEquatable<GLBuffer>
 
     public GLBuffer(nuint sizeInBytes, void* data, BufferStorageMask bufferStorageMask = BufferStorageMask.DynamicStorageBit)
     {
-        Handle = new GLObjectHandle(GL.CreateBuffer(), GLObjectType.Buffer);
+        Handle = new GLObjectHandle(GL.CreateBuffer(), ObjectType.Buffer);
         SizeInBytes = sizeInBytes;
         GL.NamedBufferStorage(Handle.Value, (nint)sizeInBytes, data, bufferStorageMask);
     }
 
     public GLBuffer(ReadOnlySpan<byte> data, BufferStorageMask bufferStorageMask = BufferStorageMask.DynamicStorageBit)
     {
-        Handle = new GLObjectHandle(GL.CreateBuffer(), GLObjectType.Buffer);
+        Handle = new GLObjectHandle(GL.CreateBuffer(), ObjectType.Buffer);
         SizeInBytes = (nuint)data.Length;
         GL.NamedBufferStorage(Handle.Value, data.Length, data, bufferStorageMask);
     }
+
     /// <inheritdoc cref="Fill{T}(SizedInternalFormat, PixelFormat, PixelType, T)"/>
     public void Fill(SizedInternalFormat destFormat, PixelFormat srcPixelFormat, PixelType srcPixelType, void* data)
     {

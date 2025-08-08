@@ -2,12 +2,16 @@ using OpenTK.Mathematics;
 using System.Diagnostics;
 
 namespace GLGraphicsNext;
+
+/// <summary>
+/// An OpenGL Program object. It represents an executeble GPU program build from one or more linked GLShaders.
+/// </summary>
 public readonly unsafe struct GLProgram : IDisposable, IEquatable<GLProgram>
 {
     public readonly GLObjectHandle Handle;
     public GLProgram()
     {
-        Handle = new(GL.CreateProgram(), GLObjectType.Program);
+        Handle = new(GL.CreateProgram(), ObjectType.Program);
     }
 
     public GLProgram(GLObjectHandle handle)

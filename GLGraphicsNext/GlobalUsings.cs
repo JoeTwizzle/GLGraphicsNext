@@ -4,4 +4,4 @@ global using Mat4 = System.Numerics.Matrix4x4;
 global using Vec4 = System.Numerics.Vector4;
 
 
-//Enhancements: Better documentation, Bindless textures, Filtering params for Textures & Texture Views, All constructors, all uint only functions
+//Enhancements: Better documentation, Filtering params for Textures & Texture Views, All constructors, all uint only functions

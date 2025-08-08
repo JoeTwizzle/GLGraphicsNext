@@ -1,4 +1,8 @@
 namespace GLGraphicsNext;
+
+/// <summary>
+/// An OpenGL Query object with QueryTarget.AnySamplesPassed. The result is a boolean that indicates whether any samples passed occlusion testing.
+/// </summary>
 public readonly struct GLQueryAnySamples : IDisposable, IEquatable<GLQueryAnySamples>
 {
     public readonly GLQueryBase RawQuery;

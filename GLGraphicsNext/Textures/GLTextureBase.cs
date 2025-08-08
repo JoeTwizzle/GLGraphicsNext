@@ -1,22 +1,39 @@
 namespace GLGraphicsNext;
-public readonly struct TextureBase : IDisposable, IEquatable<TextureBase>
+
+/// <summary>
+/// An OpenGL Texture object. This object may represent any one of the specific Texture kinds.
+/// </summary>
+public readonly struct GLTextureBase : IDisposable, IEquatable<GLTextureBase>
 {
     public readonly GLObjectHandle Handle;
 
-    [Obsolete($"The paramaterless constructor or default({nameof(TextureBase)}) creates an invalid {nameof(TextureBase)}", true)]
-    public TextureBase()
+    [Obsolete($"The paramaterless constructor or default({nameof(GLTextureBase)}) creates an invalid {nameof(GLTextureBase)}", true)]
+    public GLTextureBase()
     {
-        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(TextureBase)}");
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(GLTextureBase)}");
     }
 
-    public TextureBase(GLObjectHandle handle)
+    public GLTextureBase(GLObjectHandle handle)
     {
         Handle = handle;
     }
 
-    public TextureBase(TextureTarget textureTarget)
+    public GLTextureBase(TextureTarget textureTarget)
     {
-        Handle = new(GL.CreateTexture(textureTarget), GLObjectType.Texture);
+        Handle = new(GL.CreateTexture(textureTarget), ObjectType.Texture);
+    }
+
+    /// <summary>
+    /// Gets the bindless handle that identifies this texture. 
+    /// </summary>
+    /// <returns>The new bindless handle for this texture</returns>
+    /// <remarks>
+    /// <para><see href="https://ktstephano.github.io/rendering/opengl/bindless"/></para>
+    /// <para><see href="https://registry.khronos.org/OpenGL/extensions/ARB/ARB_bindless_texture.txt"/></para>
+    /// </remarks>
+    public GLBindlessTextureHandle CreateBindlessHandle()
+    {
+        return new GLBindlessTextureHandle(this);
     }
 
     public uint GetWidth()
@@ -61,7 +78,7 @@ public readonly struct TextureBase : IDisposable, IEquatable<TextureBase>
 
     public override bool Equals(object? obj)
     {
-        return obj is TextureBase gl && Equals(gl);
+        return obj is GLTextureBase gl && Equals(gl);
     }
 
     public override int GetHashCode()
@@ -69,17 +86,17 @@ public readonly struct TextureBase : IDisposable, IEquatable<TextureBase>
         return Handle.GetHashCode();
     }
 
-    public static bool operator ==(TextureBase left, TextureBase right)
+    public static bool operator ==(GLTextureBase left, GLTextureBase right)
     {
         return left.Equals(right);
     }
 
-    public static bool operator !=(TextureBase left, TextureBase right)
+    public static bool operator !=(GLTextureBase left, GLTextureBase right)
     {
         return !(left == right);
     }
 
-    public bool Equals(TextureBase other)
+    public bool Equals(GLTextureBase other)
     {
         return Handle.Equals(other.Handle);
     }

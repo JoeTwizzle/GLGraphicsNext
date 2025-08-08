@@ -1,4 +1,8 @@
 namespace GLGraphicsNext;
+
+/// <summary>
+/// An OpenGL Query object with QueryTarget.TimeElapsed. It returns the gpu duration in nanoseconds for commands executed during this query.
+/// </summary>
 public readonly struct GLQueryTimeElapsed : IDisposable, IEquatable<GLQueryTimeElapsed>
 {
     public readonly GLQueryBase RawQuery;

@@ -1,4 +1,8 @@
 namespace GLGraphicsNext;
+
+/// <summary>
+/// An OpenGL Query object with QueryTarget.Timestamp. It returns the gpu timestamp in nanoseconds, when the gpu has completed all commands, before <see cref="FetchCompletionTimestamp"/> was called
+/// </summary>
 public readonly unsafe struct GLQueryTimestamp : IDisposable, IEquatable<GLQueryTimestamp>
 {
     public readonly GLQueryBase RawQuery;

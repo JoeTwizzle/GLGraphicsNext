@@ -3,16 +3,19 @@ using OpenTK.Mathematics;
 namespace GLGraphicsNext;
 
 /// <summary>
-/// Represents an OpenGL Sampler Object
+/// Represents an OpenGL Sampler object. Do not confuse with GLSL samplers.
 /// </summary>
-/// <remarks><see href="https://www.khronos.org/opengl/wiki/sampler_Object"/></remarks>
+/// <remarks>
+/// <para><see href="https://www.khronos.org/opengl/wiki/sampler_Object"/></para>
+/// <para><see href="https://registry.khronos.org/OpenGL/extensions/ARB/ARB_sampler_objects.txt"/></para>
+/// </remarks>
 public readonly unsafe struct GLSampler : IDisposable, IEquatable<GLSampler>
 {
     public readonly GLObjectHandle Handle;
 
     public GLSampler()
     {
-        Handle = new(GL.CreateSampler(), GLObjectType.Sampler);
+        Handle = new(GL.CreateSampler(), ObjectType.Sampler);
     }
 
     public GLSampler(GLObjectHandle handle)

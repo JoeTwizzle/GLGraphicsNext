@@ -1,17 +1,19 @@
 using OpenTK.Mathematics;
-using System.Xml;
 
 namespace GLGraphicsNext;
 
-public readonly unsafe struct Texture3D : IDisposable, IEquatable<Texture3D>
+/// <summary>
+/// An OpenGL Texture object with three dimensions to its data. 
+/// </summary>
+public readonly unsafe struct GLTexture3D : IDisposable, IEquatable<GLTexture3D>
 {
-    public readonly TextureBase RawTexture;
+    public readonly GLTextureBase RawTexture;
     public readonly uint Width;
     public readonly uint Height;
     public readonly uint MipLevels;
     public readonly uint Depth;
 
-    public Texture3D(Texture3D srcTexture, SizedInternalFormat viewFormat, uint firstMipLevel = 0, uint mipLevels = 0)
+    public GLTexture3D(GLTexture3D srcTexture, SizedInternalFormat viewFormat, uint firstMipLevel = 0, uint mipLevels = 0)
     {
         if (mipLevels == 0)
         {
@@ -22,7 +24,7 @@ public readonly unsafe struct Texture3D : IDisposable, IEquatable<Texture3D>
             mipLevels = (uint)lvls;
         }
 
-        RawTexture = new TextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
+        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), ObjectType.Texture));
         GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture3d, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, 0, 1);
         Width = srcTexture.Width >> (int)firstMipLevel;
         Height = srcTexture.Height >> (int)firstMipLevel;
@@ -30,13 +32,13 @@ public readonly unsafe struct Texture3D : IDisposable, IEquatable<Texture3D>
         MipLevels = mipLevels;
     }
 
-    [Obsolete($"The paramaterless constructor or default({nameof(Texture3D)}) creates an invalid {nameof(Texture3D)}")]
-    public Texture3D()
+    [Obsolete($"The paramaterless constructor or default({nameof(GLTexture3D)}) creates an invalid {nameof(GLTexture3D)}")]
+    public GLTexture3D()
     {
-        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(Texture3D)}");
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(GLTexture3D)}");
     }
 
-    public Texture3D(TextureBase rawTexture)
+    public GLTexture3D(GLTextureBase rawTexture)
     {
         RawTexture = rawTexture;
         Width = RawTexture.GetWidth();
@@ -45,13 +47,13 @@ public readonly unsafe struct Texture3D : IDisposable, IEquatable<Texture3D>
         MipLevels = RawTexture.GetMipmapLevels();
     }
 
-    public Texture3D(uint width, uint height, uint depth, SizedInternalFormat sizedInternalFormat, uint mipLevels = 1)
+    public GLTexture3D(uint width, uint height, uint depth, SizedInternalFormat sizedInternalFormat, uint mipLevels = 1)
     {
         Width = width;
         Height = height;
         Depth = depth;
         MipLevels = mipLevels;
-        RawTexture = new TextureBase(TextureTarget.Texture3d);
+        RawTexture = new GLTextureBase(TextureTarget.Texture3d);
         GL.TextureStorage3D(RawTexture.Handle.Value, (int)mipLevels, sizedInternalFormat, (int)width, (int)height, (int)depth);
     }
 
@@ -229,7 +231,7 @@ public readonly unsafe struct Texture3D : IDisposable, IEquatable<Texture3D>
 
     public override bool Equals(object? obj)
     {
-        return obj is Texture3D gl && Equals(gl);
+        return obj is GLTexture3D gl && Equals(gl);
     }
 
     public override int GetHashCode()
@@ -237,17 +239,17 @@ public readonly unsafe struct Texture3D : IDisposable, IEquatable<Texture3D>
         return RawTexture.GetHashCode();
     }
 
-    public static bool operator ==(Texture3D left, Texture3D right)
+    public static bool operator ==(GLTexture3D left, GLTexture3D right)
     {
         return left.Equals(right);
     }
 
-    public static bool operator !=(Texture3D left, Texture3D right)
+    public static bool operator !=(GLTexture3D left, GLTexture3D right)
     {
         return !(left == right);
     }
 
-    public bool Equals(Texture3D other)
+    public bool Equals(GLTexture3D other)
     {
         return RawTexture.Equals(other.RawTexture);
     }

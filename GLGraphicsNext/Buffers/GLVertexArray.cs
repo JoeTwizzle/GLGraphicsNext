@@ -1,14 +1,16 @@
 using System.Runtime.CompilerServices;
 
 namespace GLGraphicsNext;
-
+/// <summary>
+/// An OpenGL VertexArray object. Stores the memory layout of vertices and attached vertex- and index-buffers.
+/// </summary>
 public readonly unsafe struct GLVertexArray : IDisposable, IEquatable<GLVertexArray>
 {
     public readonly GLObjectHandle Handle;
 
     public GLVertexArray()
     {
-        Handle = new(GL.CreateVertexArray(), GLObjectType.VertexArray);
+        Handle = new(GL.CreateVertexArray(), ObjectType.VertexArray);
     }
 
     public GLVertexArray(GLObjectHandle handle)

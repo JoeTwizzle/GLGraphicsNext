@@ -1,4 +1,8 @@
 namespace GLGraphicsNext;
+
+/// <summary>
+/// An OpenGL Query object with QueryTarget.SamplesPassed. It returns the number of samples that passed occlusion testing.
+/// </summary>
 public readonly unsafe struct GLQuerySamples : IDisposable, IEquatable<GLQuerySamples>
 {
     public readonly GLQueryBase RawQuery;

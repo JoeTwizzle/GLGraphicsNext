@@ -2,15 +2,18 @@ using OpenTK.Mathematics;
 
 namespace GLGraphicsNext;
 
-public readonly unsafe struct Texture2DArray : IDisposable, IEquatable<Texture2DArray>
+/// <summary>
+/// An OpenGL Texture object with two dimensions and one index to its data.
+/// </summary>
+public readonly unsafe struct GLTexture2DArray : IDisposable, IEquatable<GLTexture2DArray>
 {
-    public readonly TextureBase RawTexture;
+    public readonly GLTextureBase RawTexture;
     public readonly uint Width;
     public readonly uint Height;
     public readonly uint MipLevels;
     public readonly uint Layers;
 
-    public Texture2DArray(Texture2D srcTexture, SizedInternalFormat viewFormat, uint firstMipLevel = 0, uint mipLevels = 0)
+    public GLTexture2DArray(GLTexture2D srcTexture, SizedInternalFormat viewFormat, uint firstMipLevel = 0, uint mipLevels = 0)
     {
         if (mipLevels == 0)
         {
@@ -21,7 +24,7 @@ public readonly unsafe struct Texture2DArray : IDisposable, IEquatable<Texture2D
             mipLevels = (uint)lvls;
         }
 
-        RawTexture = new TextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
+        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), ObjectType.Texture));
         GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2dArray, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, 0, 1);
         Width = srcTexture.Width >> (int)firstMipLevel;
         Height = srcTexture.Height >> (int)firstMipLevel;
@@ -29,7 +32,7 @@ public readonly unsafe struct Texture2DArray : IDisposable, IEquatable<Texture2D
         MipLevels = mipLevels;
     }
 
-    public Texture2DArray(TextureCubemap srcTexture, SizedInternalFormat viewFormat, CubemapFace firstFace, uint faceCount, uint firstMipLevel = 0, uint mipLevels = 0)
+    public GLTexture2DArray(GLTextureCubemap srcTexture, SizedInternalFormat viewFormat, CubemapFace firstFace, uint faceCount, uint firstMipLevel = 0, uint mipLevels = 0)
     {
         if (mipLevels == 0)
         {
@@ -40,7 +43,7 @@ public readonly unsafe struct Texture2DArray : IDisposable, IEquatable<Texture2D
             mipLevels = (uint)lvls;
         }
 
-        RawTexture = new TextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
+        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), ObjectType.Texture));
         GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2dArray, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, (uint)firstFace, faceCount);
         Width = srcTexture.Width >> (int)firstMipLevel;
         Height = srcTexture.Height >> (int)firstMipLevel;
@@ -48,7 +51,7 @@ public readonly unsafe struct Texture2DArray : IDisposable, IEquatable<Texture2D
         MipLevels = mipLevels;
     }
 
-    public Texture2DArray(Texture2DArray srcTexture, SizedInternalFormat viewFormat, uint firstLayer, uint layerCount, uint firstMipLevel = 0, uint mipLevels = 0)
+    public GLTexture2DArray(GLTexture2DArray srcTexture, SizedInternalFormat viewFormat, uint firstLayer, uint layerCount, uint firstMipLevel = 0, uint mipLevels = 0)
     {
         if (mipLevels == 0)
         {
@@ -59,7 +62,7 @@ public readonly unsafe struct Texture2DArray : IDisposable, IEquatable<Texture2D
             mipLevels = (uint)lvls;
         }
 
-        RawTexture = new TextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
+        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), ObjectType.Texture));
         GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2dArray, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, firstLayer, layerCount);
         Width = srcTexture.Width >> (int)firstMipLevel;
         Height = srcTexture.Height >> (int)firstMipLevel;
@@ -67,7 +70,7 @@ public readonly unsafe struct Texture2DArray : IDisposable, IEquatable<Texture2D
         MipLevels = mipLevels;
     }
 
-    public Texture2DArray(TextureCubemapArray srcTexture, SizedInternalFormat viewFormat, CubemapFace firstFace, uint faceCount, uint firstLayer, uint layerCount, uint firstMipLevel = 0, uint mipLevels = 0)
+    public GLTexture2DArray(GLTextureCubemapArray srcTexture, SizedInternalFormat viewFormat, CubemapFace firstFace, uint faceCount, uint firstLayer, uint layerCount, uint firstMipLevel = 0, uint mipLevels = 0)
     {
         if (mipLevels == 0)
         {
@@ -78,7 +81,7 @@ public readonly unsafe struct Texture2DArray : IDisposable, IEquatable<Texture2D
             mipLevels = (uint)lvls;
         }
 
-        RawTexture = new TextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
+        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), ObjectType.Texture));
         GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2dArray, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, firstLayer * 6 + (uint)firstFace, layerCount * 6 + faceCount);
         Width = srcTexture.Width >> (int)firstMipLevel;
         Height = srcTexture.Height >> (int)firstMipLevel;
@@ -86,13 +89,13 @@ public readonly unsafe struct Texture2DArray : IDisposable, IEquatable<Texture2D
         MipLevels = mipLevels;
     }
 
-    [Obsolete($"The paramaterless constructor or default({nameof(Texture2DArray)}) creates an invalid {nameof(Texture2DArray)}", true)]
-    public Texture2DArray()
+    [Obsolete($"The paramaterless constructor or default({nameof(GLTexture2DArray)}) creates an invalid {nameof(GLTexture2DArray)}", true)]
+    public GLTexture2DArray()
     {
-        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(Texture2DArray)}");
+        ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(GLTexture2DArray)}");
     }
 
-    public Texture2DArray(TextureBase rawTexture)
+    public GLTexture2DArray(GLTextureBase rawTexture)
     {
         RawTexture = rawTexture;
         Width = RawTexture.GetWidth();
@@ -101,13 +104,13 @@ public readonly unsafe struct Texture2DArray : IDisposable, IEquatable<Texture2D
         MipLevels = RawTexture.GetMipmapLevels();
     }
 
-    public Texture2DArray(uint width, uint height, uint layers, SizedInternalFormat sizedInternalFormat, uint mipLevels = 1)
+    public GLTexture2DArray(uint width, uint height, uint layers, SizedInternalFormat sizedInternalFormat, uint mipLevels = 1)
     {
         Width = width;
         Height = height;
         Layers = layers;
         MipLevels = mipLevels;
-        RawTexture = new TextureBase(TextureTarget.Texture2dArray);
+        RawTexture = new GLTextureBase(TextureTarget.Texture2dArray);
         GL.TextureStorage3D(RawTexture.Handle.Value, (int)mipLevels, sizedInternalFormat, (int)width, (int)height, (int)layers);
     }
 
@@ -284,7 +287,7 @@ public readonly unsafe struct Texture2DArray : IDisposable, IEquatable<Texture2D
 
     public override bool Equals(object? obj)
     {
-        return obj is Texture2DArray gl && Equals(gl);
+        return obj is GLTexture2DArray gl && Equals(gl);
     }
 
     public override int GetHashCode()
@@ -292,17 +295,17 @@ public readonly unsafe struct Texture2DArray : IDisposable, IEquatable<Texture2D
         return RawTexture.GetHashCode();
     }
 
-    public static bool operator ==(Texture2DArray left, Texture2DArray right)
+    public static bool operator ==(GLTexture2DArray left, GLTexture2DArray right)
     {
         return left.Equals(right);
     }
 
-    public static bool operator !=(Texture2DArray left, Texture2DArray right)
+    public static bool operator !=(GLTexture2DArray left, GLTexture2DArray right)
     {
         return !(left == right);
     }
 
-    public bool Equals(Texture2DArray other)
+    public bool Equals(GLTexture2DArray other)
     {
         return RawTexture.Equals(other.RawTexture);
     }

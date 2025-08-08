@@ -2,11 +2,14 @@ using System.Diagnostics;
 
 namespace GLGraphicsNext;
 
+/// <summary>
+/// A handle representing one of the specifc OpenGL objects, as denoted by <see cref="ObjectType"/>.
+/// </summary>
 public readonly struct GLObjectHandle : IDisposable, IEquatable<GLObjectHandle>
 {
     public readonly int Value;
-    public readonly GLObjectType ObjectType;
-    public bool IsValid => Value != 0 && ObjectType != GLObjectType.None;
+    public readonly ObjectType ObjectType;
+    public bool IsValid => Value != 0 && ObjectType != ObjectType.None;
 
     [Obsolete($"The paramaterless constructor or default({nameof(GLObjectHandle)}) creates an invalid {nameof(GLObjectHandle)}", true)]
     public GLObjectHandle()
@@ -14,12 +17,12 @@ public readonly struct GLObjectHandle : IDisposable, IEquatable<GLObjectHandle>
         ThrowHelper.ThrowInvalidOperationException($"Creates an invalid {nameof(GLObjectHandle)}");
     }
 
-    public GLObjectHandle(int value, GLObjectType objectType)
+    public GLObjectHandle(int value, ObjectType objectType)
     {
         Value = value;
         ObjectType = objectType;
     }
-    public static GLObjectHandle Create(int value, GLObjectType objectType)
+    public static GLObjectHandle Create(int value, ObjectType objectType)
     {
         return new GLObjectHandle(value, objectType);
     }
@@ -28,37 +31,37 @@ public readonly struct GLObjectHandle : IDisposable, IEquatable<GLObjectHandle>
     {
         switch (ObjectType)
         {
-            case GLObjectType.VertexArray:
+            case ObjectType.VertexArray:
                 GL.DeleteVertexArray(Value);
                 break;
-            case GLObjectType.Program:
+            case ObjectType.Program:
                 GL.DeleteProgram(Value);
                 break;
-            case GLObjectType.FrameBuffer:
+            case ObjectType.FrameBuffer:
                 GL.DeleteFramebuffer(Value);
                 break;
-            case GLObjectType.Sampler:
+            case ObjectType.Sampler:
                 GL.DeleteSampler(Value);
                 break;
-            case GLObjectType.ProgramPipeline:
+            case ObjectType.ProgramPipeline:
                 GL.DeleteProgramPipeline(Value);
                 break;
-            case GLObjectType.Texture:
+            case ObjectType.Texture:
                 GL.DeleteTexture(Value);
                 break;
-            case GLObjectType.Buffer:
+            case ObjectType.Buffer:
                 GL.DeleteBuffer(Value);
                 break;
-            case GLObjectType.RenderBuffer:
+            case ObjectType.RenderBuffer:
                 GL.DeleteRenderbuffer(Value);
                 break;
-            case GLObjectType.Query:
+            case ObjectType.Query:
                 GL.DeleteQuery(Value);
                 break;
-            case GLObjectType.Shader:
+            case ObjectType.Shader:
                 GL.DeleteShader(Value);
                 break;
-            case GLObjectType.None:
+            case ObjectType.None:
             default:
                 Debug.WriteLine("Tried to dispose of uninitialized GLObject");
                 break;

@@ -1,4 +1,8 @@
 namespace GLGraphicsNext;
+
+/// <summary>
+/// An OpenGL Query object. This object may represent any one of the specific Query kinds.
+/// </summary>
 public readonly struct GLQueryBase : IDisposable, IEquatable<GLQueryBase>
 {
     public readonly GLObjectHandle Handle;
@@ -16,7 +20,7 @@ public readonly struct GLQueryBase : IDisposable, IEquatable<GLQueryBase>
 
     public GLQueryBase(QueryTarget queryTarget)
     {
-        Handle = new(GL.CreateQuery(queryTarget), GLObjectType.Query);
+        Handle = new(GL.CreateQuery(queryTarget), ObjectType.Query);
     }
 
     public void Dispose()

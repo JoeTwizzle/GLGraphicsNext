@@ -1,12 +1,16 @@
 using OpenTK.Mathematics;
 
 namespace GLGraphicsNext;
+
+/// <summary>
+/// An OpenGL Framebuffer object. Stores the result of render operations in the attached textures.
+/// </summary>
 public unsafe readonly struct GLFramebuffer : IDisposable, IEquatable<GLFramebuffer>
 {
     public readonly GLObjectHandle Handle;
     public GLFramebuffer()
     {
-        Handle = new GLObjectHandle(GL.CreateFramebuffer(), GLObjectType.FrameBuffer);
+        Handle = new GLObjectHandle(GL.CreateFramebuffer(), ObjectType.FrameBuffer);
     }
 
     public GLFramebuffer(GLObjectHandle handle)
@@ -27,7 +31,7 @@ public unsafe readonly struct GLFramebuffer : IDisposable, IEquatable<GLFramebuf
         return res;
     }
 
-    public void AttachTexture(TextureBase texture, FramebufferAttachment framebufferAttachment, int mipLevel = 0)
+    public void AttachTexture(GLTextureBase texture, FramebufferAttachment framebufferAttachment, int mipLevel = 0)
     {
         GL.NamedFramebufferTexture(Handle.Value, framebufferAttachment, texture.Handle.Value, mipLevel);
     }

@@ -1,6 +1,6 @@
 namespace GLGraphicsNext;
 
-public enum GLObjectType
+public enum ObjectType : int
 {
     None,
     VertexArray,
