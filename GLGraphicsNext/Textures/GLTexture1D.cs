@@ -22,7 +22,7 @@ public readonly unsafe struct GLTexture1D : IDisposable, IEquatable<GLTexture1D>
             mipLevels = (uint)lvls;
         }
 
-        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), ObjectType.Texture));
+        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
         GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture1d, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, 0, 1);
         Width = srcTexture.Width >> (int)firstMipLevel;
         MipLevels = mipLevels;
@@ -39,7 +39,7 @@ public readonly unsafe struct GLTexture1D : IDisposable, IEquatable<GLTexture1D>
             mipLevels = (uint)lvls;
         }
 
-        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), ObjectType.Texture));
+        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
         GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture1d, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, layer, 1);
         Width = srcTexture.Width >> (int)firstMipLevel;
         MipLevels = mipLevels;

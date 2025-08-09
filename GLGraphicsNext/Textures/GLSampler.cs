@@ -15,7 +15,7 @@ public readonly unsafe struct GLSampler : IDisposable, IEquatable<GLSampler>
 
     public GLSampler()
     {
-        Handle = new(GL.CreateSampler(), ObjectType.Sampler);
+        Handle = new(GL.CreateSampler(), GLObjectType.Sampler);
     }
 
     public GLSampler(GLObjectHandle handle)

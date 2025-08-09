@@ -11,7 +11,7 @@ public readonly unsafe struct GLProgram : IDisposable, IEquatable<GLProgram>
     public readonly GLObjectHandle Handle;
     public GLProgram()
     {
-        Handle = new(GL.CreateProgram(), ObjectType.Program);
+        Handle = new(GL.CreateProgram(), GLObjectType.Program);
     }
 
     public GLProgram(GLObjectHandle handle)

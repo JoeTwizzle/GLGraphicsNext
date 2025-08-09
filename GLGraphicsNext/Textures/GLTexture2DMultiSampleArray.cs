@@ -15,7 +15,7 @@ public readonly unsafe struct GLTexture2DMultiSampleArray : IDisposable, IEquata
 
     public GLTexture2DMultiSampleArray(GLTexture2DMultiSample srcTexture, SizedInternalFormat viewFormat)
     {
-        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), ObjectType.Texture));
+        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
         GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2dMultisampleArray, srcTexture.RawTexture.Handle.Value, viewFormat, 0, 1, 0, 1);
         Width = srcTexture.Width;
         Height = srcTexture.Height;
@@ -24,7 +24,7 @@ public readonly unsafe struct GLTexture2DMultiSampleArray : IDisposable, IEquata
 
     public GLTexture2DMultiSampleArray(GLTexture2DMultiSampleArray srcTexture, SizedInternalFormat viewFormat, uint firstLayer, uint layerCount)
     {
-        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), ObjectType.Texture));
+        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
         GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2dMultisampleArray, srcTexture.RawTexture.Handle.Value, viewFormat, 0, 1, firstLayer, layerCount);
         Width = srcTexture.Width;
         Height = srcTexture.Height;

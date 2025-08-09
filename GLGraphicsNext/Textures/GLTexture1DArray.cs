@@ -23,7 +23,7 @@ public readonly unsafe struct GLTexture1DArray : IDisposable, IEquatable<GLTextu
             mipLevels = (uint)lvls;
         }
 
-        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), ObjectType.Texture));
+        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
         GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture1dArray, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, 0, 1);
         Width = srcTexture.Width >> (int)firstMipLevel;
         Layers = layerCount;
@@ -41,7 +41,7 @@ public readonly unsafe struct GLTexture1DArray : IDisposable, IEquatable<GLTextu
             mipLevels = (uint)lvls;
         }
 
-        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), ObjectType.Texture));
+        RawTexture = new GLTextureBase(new GLObjectHandle(GL.GenTexture(), GLObjectType.Texture));
         GL.TextureView(RawTexture.Handle.Value, TextureTarget.Texture2d, srcTexture.RawTexture.Handle.Value, viewFormat, firstMipLevel, mipLevels, (uint)face, 1);
         Width = srcTexture.Width >> (int)firstMipLevel;
         Layers = 1;

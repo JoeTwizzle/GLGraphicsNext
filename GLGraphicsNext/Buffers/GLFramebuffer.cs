@@ -10,7 +10,7 @@ public unsafe readonly struct GLFramebuffer : IDisposable, IEquatable<GLFramebuf
     public readonly GLObjectHandle Handle;
     public GLFramebuffer()
     {
-        Handle = new GLObjectHandle(GL.CreateFramebuffer(), ObjectType.FrameBuffer);
+        Handle = new GLObjectHandle(GL.CreateFramebuffer(), GLObjectType.FrameBuffer);
     }
 
     public GLFramebuffer(GLObjectHandle handle)

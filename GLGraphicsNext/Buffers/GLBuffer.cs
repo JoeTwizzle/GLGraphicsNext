@@ -31,7 +31,7 @@ public readonly unsafe struct GLBuffer : IDisposable, IEquatable<GLBuffer>
 
     public GLBuffer(nuint sizeInBytes, BufferStorageMask bufferStorageMask = BufferStorageMask.DynamicStorageBit)
     {
-        Handle = new GLObjectHandle(GL.CreateBuffer(), ObjectType.Buffer);
+        Handle = new GLObjectHandle(GL.CreateBuffer(), GLObjectType.Buffer);
         SizeInBytes = sizeInBytes;
         GL.NamedBufferStorage(Handle.Value, (nint)sizeInBytes, (void*)0, bufferStorageMask);
     }
@@ -42,14 +42,14 @@ public readonly unsafe struct GLBuffer : IDisposable, IEquatable<GLBuffer>
 
     public GLBuffer(nuint sizeInBytes, void* data, BufferStorageMask bufferStorageMask = BufferStorageMask.DynamicStorageBit)
     {
-        Handle = new GLObjectHandle(GL.CreateBuffer(), ObjectType.Buffer);
+        Handle = new GLObjectHandle(GL.CreateBuffer(), GLObjectType.Buffer);
         SizeInBytes = sizeInBytes;
         GL.NamedBufferStorage(Handle.Value, (nint)sizeInBytes, data, bufferStorageMask);
     }
 
     public GLBuffer(ReadOnlySpan<byte> data, BufferStorageMask bufferStorageMask = BufferStorageMask.DynamicStorageBit)
     {
-        Handle = new GLObjectHandle(GL.CreateBuffer(), ObjectType.Buffer);
+        Handle = new GLObjectHandle(GL.CreateBuffer(), GLObjectType.Buffer);
         SizeInBytes = (nuint)data.Length;
         GL.NamedBufferStorage(Handle.Value, data.Length, data, bufferStorageMask);
     }

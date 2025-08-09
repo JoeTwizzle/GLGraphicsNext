@@ -26,7 +26,7 @@ public readonly struct GLShader : IDisposable, IEquatable<GLShader>
     public GLShader(ShaderType shaderType, string sourceText)
     {
         int handle = GL.CreateShader(shaderType);
-        Handle = new(handle, ObjectType.Shader);
+        Handle = new(handle, GLObjectType.Shader);
         GL.ShaderSource(Handle.Value, sourceText);
         GL.CompileShader(Handle.Value);
         GL.GetShaderi(Handle.Value, ShaderParameterName.CompileStatus, out int code);
@@ -45,7 +45,7 @@ public readonly struct GLShader : IDisposable, IEquatable<GLShader>
     public unsafe GLShader(ShaderType shaderType, ReadOnlySpan<byte> sourceTextUtf8)
     {
         int handle = GL.CreateShader(shaderType);
-        Handle = new(handle, ObjectType.Shader);
+        Handle = new(handle, GLObjectType.Shader);
         int* lengths = stackalloc int[1] { sourceTextUtf8.Length };
         fixed (byte* sTextPtr = sourceTextUtf8)
         {
