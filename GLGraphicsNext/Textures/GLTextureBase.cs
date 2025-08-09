@@ -20,7 +20,7 @@ public readonly struct GLTextureBase : IDisposable, IEquatable<GLTextureBase>
 
     public GLTextureBase(TextureTarget textureTarget)
     {
-        Handle = new(GL.CreateTexture(textureTarget), GLObjectType.Texture);
+        Handle = new GLObjectHandle(GL.CreateTexture(textureTarget), GLObjectType.Texture);
     }
 
     /// <summary>

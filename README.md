@@ -74,18 +74,18 @@ internal sealed class ExampleGame : BasePal2Window
         
         void main()
         {
-            color = vec4(0.980, 0.118, 0.506, 1.0);
+            color = vec4(0.35, 0.39, 0.65, 1);
         }";
 
     readonly float[] vertices = //Vertices for our Square
-    {
-             0.5f,  0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            -0.5f,  0.5f, 0.0f
-    };
+    [
+        0.5f,  0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f,
+        -0.5f,  0.5f, 0.0f
+    ];
 
-    readonly uint[] indices = { 0, 1, 3, 1, 2, 3 }; //Indices for our Square
+    readonly uint[] indices = [0, 1, 3, 1, 2, 3]; //Indices for our Square
     protected override void InitRenderer()
     {
         //The OpenGL vertex input location 0 consists of 3 float values. 
@@ -138,7 +138,7 @@ internal sealed class ExampleGame : BasePal2Window
 
     protected override void Render()
     {
-        GL.ClearColor(0.600f, 0.630f, 0.535f, 1f);
+        GL.ClearColor(0.19f, 0.21f, 0.35f, 1f);
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         //Set our VAO as the active VAO
         VAO.Bind();
@@ -146,8 +146,8 @@ internal sealed class ExampleGame : BasePal2Window
         ShaderProgram.Bind();
         //Render our Square
         GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
-
-        Toolkit.OpenGL.SwapBuffers(glContext);
+        //Display our rendered image
+        Toolkit.OpenGL.SwapBuffers(contextHandle);
     }
 }
 ```

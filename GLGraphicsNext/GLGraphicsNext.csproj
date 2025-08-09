@@ -10,7 +10,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Title>GL Graphics NEXT</Title>
-    <VersionPrefix>1.1.0</VersionPrefix>
+    <VersionPrefix>1.1.1</VersionPrefix>
     <Authors>JoeTwizzle</Authors>
     <PackageTags> opengl;opentk;rendering;AZDO;graphics;C#;.NET;DSA;DirectStateAccess;Modern</PackageTags>
     <RepositoryUrl>https://github.com/JoeTwizzle/GLGraphicsNext</RepositoryUrl>

@@ -9,8 +9,26 @@ public readonly struct GLObjectHandle : IDisposable, IEquatable<GLObjectHandle>
 {
     public readonly int Value;
     public readonly GLObjectType ObjectType;
-    public bool IsValid => Value != 0 && ObjectType != GLObjectType.None;
-    
+    public bool IsValid => Value != 0 && ValidateGLObjectType();
+    private readonly bool ValidateGLObjectType()
+    {
+        return ObjectType switch
+        {
+            GLObjectType.None => false,
+            GLObjectType.VertexArray => GL.IsVertexArray(Value),
+            GLObjectType.Program => GL.IsProgram(Value),
+            GLObjectType.Sampler => GL.IsSampler(Value),
+            GLObjectType.ProgramPipeline => GL.IsProgramPipeline(Value),
+            GLObjectType.Buffer => GL.IsBuffer(Value),
+            GLObjectType.Query => GL.IsQuery(Value),
+            GLObjectType.Shader => GL.IsShader(Value),
+            GLObjectType.Texture => GL.IsTexture(Value),
+            GLObjectType.RenderBuffer => GL.IsRenderbuffer(Value),
+            GLObjectType.FrameBuffer => GL.IsFramebuffer(Value),
+            _ => false,
+        };
+    }
+
     [Obsolete($"The paramaterless constructor or default({nameof(GLObjectHandle)}) creates an invalid {nameof(GLObjectHandle)}", true)]
     public GLObjectHandle()
     {

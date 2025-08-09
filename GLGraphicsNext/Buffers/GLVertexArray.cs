@@ -10,7 +10,7 @@ public readonly unsafe struct GLVertexArray : IDisposable, IEquatable<GLVertexAr
 
     public GLVertexArray()
     {
-        Handle = new(GL.CreateVertexArray(), GLObjectType.VertexArray);
+        Handle = new GLObjectHandle(GL.CreateVertexArray(), GLObjectType.VertexArray);
     }
 
     public GLVertexArray(GLObjectHandle handle)
