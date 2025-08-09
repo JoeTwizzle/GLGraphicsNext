@@ -101,7 +101,7 @@ internal sealed class ExampleGame : BasePal2Window
         //Initialize the buffer and fill it with the data of our indices
         IndexBuffer = new GLBuffer<uint>(indices);
 
-        //Define how many bytes we need to advance, in order to find the next vertex
+        //Define how many bytes we need to advance in order to find the next vertex
         //AKA how many bytes does one vertex take up
         const int stride = 3 * sizeof(float);
 
@@ -124,7 +124,7 @@ internal sealed class ExampleGame : BasePal2Window
         //Compile the program
         ShaderProgram.LinkProgram();
 
-        //We can remove the fragment and vertex shader parts after compiling, to free memory
+        //We can remove the fragment and vertex shader parts after compiling to free memory
         ShaderProgram.RemoveShader(vertexShader);
         ShaderProgram.RemoveShader(fragmentShader);
         vertexShader.Dispose();
