@@ -106,4 +106,9 @@ public readonly struct GLObjectHandle : IDisposable, IEquatable<GLObjectHandle>
     {
         return Value == other.Value && ObjectType == other.ObjectType;
     }
+
+    public override string ToString()
+    {
+        return $"{ObjectType}: {Value}";
+    }
 }
